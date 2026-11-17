@@ -1,0 +1,17 @@
+export const icd10Codes: Record<string, string> = {
+  'I10': 'Essential (primary) hypertension',
+  'E11.9': 'Type 2 diabetes mellitus without complications',
+  'I50.9': 'Heart failure, unspecified',
+  'M79.3': 'Panniculitis, unspecified',
+  'Z96.641': 'Presence of right artificial hip joint',
+  'Z96.642': 'Presence of left artificial hip joint',
+  'J44.1': 'Chronic obstructive pulmonary disease with acute exacerbation',
+  'I63.9': 'Cerebral infarction, unspecified',
+  'S72.001A': 'Fracture of unspecified part of neck of right femur, initial',
+  'M17.11': 'Primary osteoarthritis, right knee',
+  'G20': 'Parkinson disease',
+  'Z87.39': 'Personal history of other musculoskeletal disorders',
+  'E78.5': 'Dyslipidemia, unspecified',
+  'N18.3': 'Chronic kidney disease, stage 3',
+  'Z79.4': 'Long term (current) use of insulin',
+}

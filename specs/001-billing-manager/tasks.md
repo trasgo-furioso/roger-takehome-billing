@@ -40,7 +40,7 @@
 
 ### Tests (write first, must fail)
 
-- [ ] T008 [P] Unit test: claim status transitions in `tests/utils/state-machine.test.ts`
+- [x] T008 [P] Unit test: claim status transitions in `tests/utils/state-machine.test.ts`
   - **Spec**: Test every valid transition from data-model.md State Transitions section
   - `canTransition('Ready for Review', 'Submitted')` returns `true` when `allPassing=true`
   - `canTransition('Ready for Review', 'Submitted')` returns `false` when `allPassing=false`
@@ -54,7 +54,7 @@
   - `canTransition('Written Off', 'Submitted')` returns `false` (terminal)
   - Every other combination returns `false`
 
-- [ ] T009 [P] Unit test: action resolution in `tests/utils/state-machine.test.ts`
+- [x] T009 [P] Unit test: action resolution in `tests/utils/state-machine.test.ts`
   - **Spec**: Test `resolveAction(status, allPassing)` returns correct action descriptor per routes.md state machine table
   - `Ready for Review` + passing → `{ label: 'Submit Claim', action: 'submit' }`
   - `Ready for Review` + not passing → `null`
@@ -66,7 +66,7 @@
   - `Paid` → `null`
   - `Written Off` → `null`
 
-- [ ] T010 [P] Unit test: readiness computation in `tests/utils/readiness.test.ts`
+- [x] T010 [P] Unit test: readiness computation in `tests/utils/readiness.test.ts`
   - **Spec**: Test `computeReadiness(claim, episode)` returns correct ReadinessCheck
   - Claim with OASIS status 'Accepted' → `oasisAccepted: true`
   - Claim with OASIS status 'Pending' → `oasisAccepted: false`
@@ -77,7 +77,7 @@
   - Claim with all revenue codes in lookup → `revenueCodesValid: true`
   - `allPassing` is `true` only when all 7 booleans are `true`
 
-- [ ] T011 [P] Unit test: claims store actions in `tests/stores/claims-store.test.ts`
+- [x] T011 [P] Unit test: claims store actions in `tests/stores/claims-store.test.ts`
   - **Spec**: Test Zustand store mutations with seed data loaded
   - `submitClaim(id)` on ready claim → status='Submitted', submissionDate set, timeline has 'Submitted' event
   - `submitClaim(id)` on claim with failing readiness → throws error
@@ -89,28 +89,28 @@
   - `updateClaimField(id, field, value)` → field updated, timeline has 'Edited' event
   - `resetToSeedData()` → state matches initial seed data exactly
 
-- [ ] T012 [P] Unit test: utility formatters in `tests/utils/formatters.test.ts`
+- [x] T012 [P] Unit test: utility formatters in `tests/utils/formatters.test.ts`
   - **Spec**: Test `formatCurrency(3842)` → `'$3,842.00'`; `formatDate('2026-10-01')` → readable format; `daysInStatus('2026-11-01')` → computed days from today; `arAgingBucket(15)` → `'0-30'`, `arAgingBucket(45)` → `'31-60'`, `arAgingBucket(75)` → `'61-90'`, `arAgingBucket(100)` → `'90+'`
 
 ### Implementation
 
-- [ ] T013 [P] Define TypeScript types in `src/models/claim.ts` — `Claim`, `ClaimStatus`, `ServiceLine`, `Diagnosis`, `ReadinessCheck`, `OasisAssessment` per data-model.md
-- [ ] T014 [P] Define TypeScript types in `src/models/patient.ts` — `Patient`, `Address`
-- [ ] T015 [P] Define TypeScript types in `src/models/episode.ts` — `Episode`, `BillingPeriod`
-- [ ] T016 [P] Define TypeScript types in `src/models/remittance.ts` — `Remittance`, `RejectionReason`, `DenialReason`
-- [ ] T017 [P] Define TypeScript types in `src/models/timeline.ts` — `TimelineEvent`, `TimelineEventType`
-- [ ] T018 Create barrel export in `src/models/index.ts`
-- [ ] T019 [P] Create reference lookup: HHA revenue codes in `src/data/revenue-codes.ts` — `Record<string, string>` mapping code → description per data-model.md table
-- [ ] T020 [P] Create reference lookup: ICD-10 subset in `src/data/icd10-codes.ts` — 10-15 common home health codes (I10 Hypertension, E11.9 Type 2 Diabetes, I50.9 Heart Failure, M79.3 Panniculitis, Z96.641 Hip replacement, etc.) with plain-language descriptions
-- [ ] T021 [P] Create reference lookup: CARC/RARC subset in `src/data/carc-rarc-codes.ts` — 5-8 common denial/rejection codes (CO-4 Modifier, CO-16 Missing info, CO-27 Expenses after coverage, PR-1 Deductible, etc.) with plain-language translations
-- [ ] T022 Implement state machine in `src/utils/state-machine.ts` — `canTransition(from, to, allPassing?)`, `resolveAction(status, allPassing)` returning `ActionDescriptor | null`. Use a typed adjacency map. Make T008 and T009 tests pass.
-- [ ] T023 Implement readiness computation in `src/utils/readiness.ts` — `computeReadiness(claim, episode): ReadinessCheck`. Pure function deriving each boolean from entity data. Computed `allPassing` getter. Make T010 tests pass.
-- [ ] T024 Implement formatters in `src/utils/formatters.ts` — `formatCurrency()`, `formatDate()`, `daysInStatus()`, `arAgingBucket()`. Make T012 tests pass.
-- [ ] T025 [P] Implement status colors in `src/utils/status-colors.ts` — `statusColor(status: ClaimStatus): MantineColor` mapping per theme config
-- [ ] T026 Create seed data in `src/data/seed.ts` — 18 claims across all statuses: 3 Ready for Review (2 all-passing, 1 failing), 4 Submitted (various ages: 5d, 25d, 50d, 95d), 3 Rejected (different rejection codes), 2 Denied (different CARC/RARC codes, one >90 days), 4 Paid, 2 Written Off. Each with realistic patient, episode, billing period, diagnoses, service lines (using reference lookup codes), and timeline events. 6 patients total.
-- [ ] T027 Implement claims store in `src/stores/claims-store.ts` — Zustand store with `persist` middleware (key `'billing-claims'`, version 1). State: `claims`, `patients`, `episodes`, `billingPeriods`. Actions: `getClaimById`, `getPatientById`, `getClaimsFiltered`, `updateClaimField`, `submitClaim`, `postPayment`, `writeOffClaim`, `resetToSeedData`. Seed data loads when localStorage empty. Make T011 tests pass.
-- [ ] T028 Implement UI store in `src/stores/ui-store.ts` — Zustand store (no persist). State: `expandedCardId`, `expandedCardMode`. Actions: `expandCard`, `collapseCard`. Notifications use `@mantine/notifications` imperative API (`notifications.show()`) directly — no notification state in this store.
-- [ ] T029 Create barrel exports in `src/data/index.ts`, `src/utils/index.ts`, `src/stores/index.ts`
+- [x] T013 [P] Define TypeScript types in `src/models/claim.ts` — `Claim`, `ClaimStatus`, `ServiceLine`, `Diagnosis`, `ReadinessCheck`, `OasisAssessment` per data-model.md
+- [x] T014 [P] Define TypeScript types in `src/models/patient.ts` — `Patient`, `Address`
+- [x] T015 [P] Define TypeScript types in `src/models/episode.ts` — `Episode`, `BillingPeriod`
+- [x] T016 [P] Define TypeScript types in `src/models/remittance.ts` — `Remittance`, `RejectionReason`, `DenialReason`
+- [x] T017 [P] Define TypeScript types in `src/models/timeline.ts` — `TimelineEvent`, `TimelineEventType`
+- [x] T018 Create barrel export in `src/models/index.ts`
+- [x] T019 [P] Create reference lookup: HHA revenue codes in `src/data/revenue-codes.ts` — `Record<string, string>` mapping code → description per data-model.md table
+- [x] T020 [P] Create reference lookup: ICD-10 subset in `src/data/icd10-codes.ts` — 10-15 common home health codes (I10 Hypertension, E11.9 Type 2 Diabetes, I50.9 Heart Failure, M79.3 Panniculitis, Z96.641 Hip replacement, etc.) with plain-language descriptions
+- [x] T021 [P] Create reference lookup: CARC/RARC subset in `src/data/carc-rarc-codes.ts` — 5-8 common denial/rejection codes (CO-4 Modifier, CO-16 Missing info, CO-27 Expenses after coverage, PR-1 Deductible, etc.) with plain-language translations
+- [x] T022 Implement state machine in `src/utils/state-machine.ts` — `canTransition(from, to, allPassing?)`, `resolveAction(status, allPassing)` returning `ActionDescriptor | null`. Use a typed adjacency map. Make T008 and T009 tests pass.
+- [x] T023 Implement readiness computation in `src/utils/readiness.ts` — `computeReadiness(claim, episode): ReadinessCheck`. Pure function deriving each boolean from entity data. Computed `allPassing` getter. Make T010 tests pass.
+- [x] T024 Implement formatters in `src/utils/formatters.ts` — `formatCurrency()`, `formatDate()`, `daysInStatus()`, `arAgingBucket()`. Make T012 tests pass.
+- [x] T025 [P] Implement status colors in `src/utils/status-colors.ts` — `statusColor(status: ClaimStatus): MantineColor` mapping per theme config
+- [x] T026 Create seed data in `src/data/seed.ts` — 18 claims across all statuses: 3 Ready for Review (2 all-passing, 1 failing), 4 Submitted (various ages: 5d, 25d, 50d, 95d), 3 Rejected (different rejection codes), 2 Denied (different CARC/RARC codes, one >90 days), 4 Paid, 2 Written Off. Each with realistic patient, episode, billing period, diagnoses, service lines (using reference lookup codes), and timeline events. 6 patients total.
+- [x] T027 Implement claims store in `src/stores/claims-store.ts` — Zustand store with `persist` middleware (key `'billing-claims'`, version 1). State: `claims`, `patients`, `episodes`, `billingPeriods`. Actions: `getClaimById`, `getPatientById`, `getClaimsFiltered`, `updateClaimField`, `submitClaim`, `postPayment`, `writeOffClaim`, `resetToSeedData`. Seed data loads when localStorage empty. Make T011 tests pass.
+- [x] T028 Implement UI store in `src/stores/ui-store.ts` — Zustand store (no persist). State: `expandedCardId`, `expandedCardMode`. Actions: `expandCard`, `collapseCard`. Notifications use `@mantine/notifications` imperative API (`notifications.show()`) directly — no notification state in this store.
+- [x] T029 Create barrel exports in `src/data/index.ts`, `src/utils/index.ts`, `src/stores/index.ts`
 
 **Checkpoint**: All unit tests pass. Types, seed data, stores, state machine, and utilities are ready. `npm run test` green.
 
