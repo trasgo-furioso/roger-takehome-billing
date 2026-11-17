@@ -450,11 +450,11 @@
 
 **Purpose**: Final cleanup, cross-story integration testing, and quickstart validation.
 
-- [ ] T075 [P] Seed data review — ensure the 18 claims in `src/data/seed.ts` cover all E2E test scenarios: at least 1 claim with multi-step timeline (created → submitted → rejected → resubmitted), 1 paid claim with remittance, 1 denied claim >90 days, claims in each aging bucket
-- [ ] T076 [P] Reset confirmation dialog — update Sidebar "Reset" item in `src/components/layout/Sidebar.tsx` to use `modals.openConfirmModal({ title: 'Reset Data', children: 'Reset all data to defaults? This cannot be undone.', labels: { confirm: 'Reset', cancel: 'Cancel' }, confirmProps: { color: 'red' }, onConfirm: () => resetToSeedData() })` from `@mantine/modals`
-- [ ] T077 [P] Responsive sidebar — ensure `AppShell.Navbar` collapses gracefully on smaller desktop windows (Mantine `AppShell` breakpoint handling)
-- [ ] T078 Run full Playwright suite — `npx playwright test` — all E2E tests from US1-US9 pass
-- [ ] T079 Run quickstart.md validation scenarios manually — confirm all 10 scenarios pass
+- [x] T075 [P] Seed data review — ensure the 18 claims in `src/data/seed.ts` cover all E2E test scenarios: at least 1 claim with multi-step timeline (created → submitted → rejected → resubmitted), 1 paid claim with remittance, 1 denied claim >90 days, claims in each aging bucket
+- [x] T076 [P] Reset confirmation dialog — update Sidebar "Reset" item in `src/components/layout/Sidebar.tsx` to use `modals.openConfirmModal({ title: 'Reset Data', children: 'Reset all data to defaults? This cannot be undone.', labels: { confirm: 'Reset', cancel: 'Cancel' }, confirmProps: { color: 'red' }, onConfirm: () => resetToSeedData() })` from `@mantine/modals`
+- [x] T077 [P] Responsive sidebar — ensure `AppShell.Navbar` collapses gracefully on smaller desktop windows (Mantine `AppShell` breakpoint handling)
+- [x] T078 Run full Playwright suite — `npx playwright test` — all E2E tests from US1-US9 pass
+- [x] T079 Run quickstart.md validation scenarios manually — confirm all 10 scenarios pass
 
 ---
 

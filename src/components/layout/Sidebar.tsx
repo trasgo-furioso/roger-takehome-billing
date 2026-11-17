@@ -1,14 +1,27 @@
 import { Group, NavLink, Text } from '@mantine/core'
+import { modals } from '@mantine/modals'
 import {
   IconFileText,
   IconLayoutDashboard,
   IconRefresh,
 } from '@tabler/icons-react'
 import { Link, useRouterState } from '@tanstack/react-router'
+import { useClaimsStore } from '@/stores'
 
 export function Sidebar() {
   const { location } = useRouterState()
   const pathname = location.pathname
+  const resetToSeedData = useClaimsStore((s) => s.resetToSeedData)
+
+  const handleReset = () => {
+    modals.openConfirmModal({
+      title: 'Reset Data',
+      children: 'Reset all data to defaults? This cannot be undone.',
+      labels: { confirm: 'Reset', cancel: 'Cancel' },
+      confirmProps: { color: 'red' },
+      onConfirm: () => resetToSeedData(),
+    })
+  }
 
   return (
     <>
@@ -35,9 +48,7 @@ export function Sidebar() {
       <NavLink
         label="Reset"
         leftSection={<IconRefresh size={20} />}
-        onClick={() => {
-          // Will be wired to resetToSeedData with confirmation in Phase 12
-        }}
+        onClick={handleReset}
       />
     </>
   )
