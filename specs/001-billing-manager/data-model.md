@@ -130,16 +130,15 @@ Denied ──[Write Off]──────> Written Off
 
 ### ServiceLine
 
-| Field | Type | Description |
-|---|---|---|
-| id | `string` | Unique line identifier |
-| revenueCode | `string` | 4-digit revenue code (e.g., "0551", "0421", "0023") |
-| revenueCodeDescription | `string` | Plain-language description |
-| hcpcsCode | `string \| null` | HCPCS code or HIPPS code (for rev 0023) |
-| serviceFromDate | `string` (ISO date) | Service start date |
-| serviceThroughDate | `string` (ISO date) | Service end date |
-| units | `number` | Number of units |
-| charges | `number` | Dollar amount for this line |
+| Field                  | Type                | Description                                         |
+| ---------------------- | ------------------- | --------------------------------------------------- |
+| id                     | `string`            | Unique line identifier                              |
+| revenueCode            | `string`            | 4-digit revenue code — key into HHA Revenue Codes lookup |
+| hcpcsCode              | `string \| null`    | HCPCS code or HIPPS code (for rev 0023)             |
+| serviceFromDate        | `string` (ISO date) | Service start date                                  |
+| serviceThroughDate     | `string` (ISO date) | Service end date                                    |
+| units                  | `number`            | Number of units                                     |
+| charges                | `number`            | Dollar amount for this line                         |
 
 ### Diagnosis
 
@@ -238,6 +237,32 @@ type TimelineEventType =
 | city | `string` | City |
 | state | `string` | 2-letter state code |
 | zip | `string` | 5-digit ZIP code |
+
+## Reference Lookups
+
+Static lookup tables shipped with the app in `src/data/`. Not stored per-claim — `revenueCode` and `icd10Code` fields on entities are keys into these tables.
+
+### HHA Revenue Codes
+
+| Code | Description |
+|---|---|
+| `0023` | Prospective payment (HIPPS rate line) |
+| `0270` | Medical/surgical supplies |
+| `0421` | Physical therapy — visits |
+| `0431` | Occupational therapy — visits |
+| `0441` | Speech-language pathology — visits |
+| `0551` | Skilled nursing — visits |
+| `0571` | Home health aide — visits |
+| `0572` | Home health aide — hourly |
+| `0001` | Total charges (always last line) |
+
+### ICD-10 Codes (subset for seed data)
+
+A small lookup of ICD-10-CM codes used in seed data, each with a plain-language description. Not an exhaustive list — just enough to support the prototype's sample claims.
+
+### CARC/RARC Codes (subset for seed data)
+
+A small lookup of Claim Adjustment Reason Codes and Remittance Advice Remark Codes used in seed denial reasons, each with a plain-language translation.
 
 ## Computed / Derived Values
 
