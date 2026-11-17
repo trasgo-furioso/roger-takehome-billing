@@ -4,6 +4,7 @@ export interface Remittance {
   deductibleAmount: number
   otherAdjustment: number
   checkEftReference: string
+  claimControlNumber: string
   remittanceDate: string
 }
 
@@ -19,4 +20,5 @@ export interface DenialReason {
   rarcDescription: string | null
   amountAtRisk: number
   denialDate: string
+  appealDeadlineDate: string
 }

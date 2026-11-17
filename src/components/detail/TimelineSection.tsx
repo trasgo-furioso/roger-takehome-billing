@@ -1,4 +1,4 @@
-import { Card, Text, ThemeIcon, Timeline } from '@mantine/core'
+import { Badge, Card, Group, Text, ThemeIcon, Timeline } from '@mantine/core'
 import {
   IconBan,
   IconCheck,
@@ -25,6 +25,35 @@ const eventConfig: Record<TimelineEventType, { icon: React.ReactNode; color: str
   Edited: { icon: <IconPencil size={14} />, color: 'gray' },
 }
 
+/** Extract structured info from timeline entry details text */
+function parseDetails(eventType: TimelineEventType, details: string | null) {
+  if (!details) return null
+
+  // Rejection entries: show code badge if present
+  if (eventType === 'Rejected') {
+    // Details may contain rejection reason text
+    return { text: details, badges: [] as string[] }
+  }
+
+  // Denial entries: extract CARC code from "CO-XX: description" pattern
+  if (eventType === 'Denied') {
+    const match = details.match(/^(CO-\d+|PR-\d+|OA-\d+):\s*(.+)$/)
+    if (match) {
+      return { text: match[2], badges: [match[1]] }
+    }
+  }
+
+  // Paid entries: extract amounts and references
+  if (eventType === 'Paid') {
+    const parts = details.split(' | ')
+    if (parts.length > 1) {
+      return { text: parts[0], badges: [], subtext: parts.slice(1).join(' · ') }
+    }
+  }
+
+  return { text: details, badges: [] as string[] }
+}
+
 interface TimelineSectionProps {
   events: TimelineEvent[]
 }
@@ -40,6 +69,8 @@ export function TimelineSection({ events }: TimelineSectionProps) {
       <Timeline active={sorted.length - 1} bulletSize={24} lineWidth={2}>
         {sorted.map((event) => {
           const config = eventConfig[event.eventType]
+          const parsed = parseDetails(event.eventType, event.details)
+
           return (
             <Timeline.Item
               key={event.id}
@@ -54,7 +85,24 @@ export function TimelineSection({ events }: TimelineSectionProps) {
               <Text fz="xs" c="dimmed">
                 {formatDate(event.timestamp)} {dayjs(event.timestamp).format('h:mm A')}
               </Text>
-              {event.details && <Text fz="sm" mt={4}>{event.details}</Text>}
+              {parsed && (
+                <>
+                  {parsed.badges.length > 0 && (
+                    <Group gap="xs" mt={4}>
+                      {parsed.badges.map((b) => (
+                        <Badge key={b} size="sm" color={config.color} variant="outline">{b}</Badge>
+                      ))}
+                    </Group>
+                  )}
+                  <Text fz="sm" mt={4}>{parsed.text}</Text>
+                  {'subtext' in parsed && parsed.subtext && (
+                    <Text fz="xs" c="dimmed" mt={2}>{parsed.subtext}</Text>
+                  )}
+                </>
+              )}
+              {!parsed && event.details && (
+                <Text fz="sm" mt={4}>{event.details}</Text>
+              )}
             </Timeline.Item>
           )
         })}

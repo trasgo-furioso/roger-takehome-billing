@@ -331,7 +331,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa11', assessmentType: 'Start of Care', status: 'Accepted', completionDate: '2026-09-28' },
     submissionDate: '2026-10-20T10:00:00Z', rejectionReason: null,
-    denialReason: { carcCode: 'CO-50', carcDescription: 'Non-covered service because it is not deemed a medical necessity.', rarcCode: 'N386', rarcDescription: 'This decision was based on a National Coverage Determination (NCD).', amountAtRisk: 4800, denialDate: '2026-10-30' },
+    denialReason: { carcCode: 'CO-50', carcDescription: 'Non-covered service because it is not deemed a medical necessity.', rarcCode: 'N386', rarcDescription: 'This decision was based on a National Coverage Determination (NCD).', amountAtRisk: 4800, denialDate: '2026-10-30', appealDeadlineDate: '2027-02-27' },
     remittance: null,
     timeline: [
       { id: 'tl11a', eventType: 'Created', timestamp: '2026-10-01T08:00:00Z', details: null },
@@ -352,7 +352,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa12', assessmentType: 'Recertification', status: 'Accepted', completionDate: '2026-07-28' },
     submissionDate: '2026-08-20T09:00:00Z', rejectionReason: null,
-    denialReason: { carcCode: 'CO-27', carcDescription: 'Expenses incurred after coverage terminated.', rarcCode: null, rarcDescription: null, amountAtRisk: 4200, denialDate: '2026-08-10' },
+    denialReason: { carcCode: 'CO-27', carcDescription: 'Expenses incurred after coverage terminated.', rarcCode: null, rarcDescription: null, amountAtRisk: 4200, denialDate: '2026-08-10', appealDeadlineDate: '2026-12-08' },
     remittance: null,
     timeline: [
       { id: 'tl12a', eventType: 'Created', timestamp: '2026-07-31T08:00:00Z', details: null },
@@ -375,7 +375,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa13', assessmentType: 'Recertification', status: 'Accepted', completionDate: '2026-09-16' },
     submissionDate: '2026-10-25T10:00:00Z', rejectionReason: null, denialReason: null,
-    remittance: { paymentAmount: 3400, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261101-001', remittanceDate: '2026-11-01' },
+    remittance: { paymentAmount: 3400, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261101-001', claimControlNumber: 'DCN-2026-091901', remittanceDate: '2026-11-01' },
     timeline: [
       { id: 'tl13a', eventType: 'Created', timestamp: '2026-09-19T08:00:00Z', details: null },
       { id: 'tl13b', eventType: 'Submitted', timestamp: '2026-10-25T10:00:00Z', details: null },
@@ -396,7 +396,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa14', assessmentType: 'Recertification', status: 'Accepted', completionDate: '2026-08-28' },
     submissionDate: '2026-10-05T09:00:00Z', rejectionReason: null, denialReason: null,
-    remittance: { paymentAmount: 3300, contractualAdjustment: 0, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261020-002', remittanceDate: '2026-10-20' },
+    remittance: { paymentAmount: 3300, contractualAdjustment: 0, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261020-002', claimControlNumber: 'DCN-2026-083101', remittanceDate: '2026-10-20' },
     timeline: [
       { id: 'tl14a', eventType: 'Created', timestamp: '2026-08-31T08:00:00Z', details: null },
       { id: 'tl14b', eventType: 'Submitted', timestamp: '2026-10-05T09:00:00Z', details: null },
@@ -416,7 +416,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa15', assessmentType: 'Start of Care', status: 'Accepted', completionDate: '2026-06-28' },
     submissionDate: '2026-08-05T10:00:00Z', rejectionReason: null, denialReason: null,
-    remittance: { paymentAmount: 3900, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'CHK-20260820-003', remittanceDate: '2026-08-20' },
+    remittance: { paymentAmount: 3900, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'CHK-20260820-003', claimControlNumber: 'DCN-2026-070101', remittanceDate: '2026-08-20' },
     timeline: [
       { id: 'tl15a', eventType: 'Created', timestamp: '2026-07-01T08:00:00Z', details: null },
       { id: 'tl15b', eventType: 'Submitted', timestamp: '2026-08-05T10:00:00Z', details: null },
@@ -438,7 +438,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa16', assessmentType: 'Recertification', status: 'Accepted', completionDate: '2026-10-28' },
     submissionDate: '2026-10-10T09:00:00Z', rejectionReason: null, denialReason: null,
-    remittance: { paymentAmount: 3800, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261105-004', remittanceDate: '2026-11-05' },
+    remittance: { paymentAmount: 3800, contractualAdjustment: 200, deductibleAmount: 0, otherAdjustment: 0, checkEftReference: 'EFT-20261105-004', claimControlNumber: 'DCN-2026-103101', remittanceDate: '2026-11-05' },
     timeline: [
       { id: 'tl16a', eventType: 'Created', timestamp: '2026-09-15T08:00:00Z', details: null },
       { id: 'tl16b', eventType: 'Submitted', timestamp: '2026-09-20T10:00:00Z', details: null },
@@ -462,7 +462,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa17', assessmentType: 'Start of Care', status: 'Accepted', completionDate: '2026-06-28' },
     submissionDate: '2026-08-01T10:00:00Z', rejectionReason: null,
-    denialReason: { carcCode: 'CO-29', carcDescription: 'The time limit for filing has expired.', rarcCode: null, rarcDescription: null, amountAtRisk: 2700, denialDate: '2026-08-15' },
+    denialReason: { carcCode: 'CO-29', carcDescription: 'The time limit for filing has expired.', rarcCode: null, rarcDescription: null, amountAtRisk: 2700, denialDate: '2026-08-15', appealDeadlineDate: '2026-12-13' },
     remittance: null,
     timeline: [
       { id: 'tl17a', eventType: 'Created', timestamp: '2026-07-01T08:00:00Z', details: null },
@@ -484,7 +484,7 @@ export const seedClaims: Claim[] = [
     readiness: allPassingReadiness,
     opiAssessment: { id: 'oa18', assessmentType: 'Recertification', status: 'Accepted', completionDate: '2026-07-28' },
     submissionDate: '2026-09-01T10:00:00Z', rejectionReason: null,
-    denialReason: { carcCode: 'CO-16', carcDescription: 'Claim/service lacks information or has submission/billing error(s).', rarcCode: 'MA130', rarcDescription: 'Your claim contains incomplete and/or invalid information.', amountAtRisk: 2300, denialDate: '2026-09-10' },
+    denialReason: { carcCode: 'CO-16', carcDescription: 'Claim/service lacks information or has submission/billing error(s).', rarcCode: 'MA130', rarcDescription: 'Your claim contains incomplete and/or invalid information.', amountAtRisk: 2300, denialDate: '2026-09-10', appealDeadlineDate: '2027-01-08' },
     remittance: null,
     timeline: [
       { id: 'tl18a', eventType: 'Created', timestamp: '2026-08-01T08:00:00Z', details: null },
