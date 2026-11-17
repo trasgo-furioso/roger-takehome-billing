@@ -1,21 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ContentHeader } from '@/components/layout/ContentHeader'
-import { Text } from '@mantine/core'
+import { ClaimDetailPage } from '@/components/detail/ClaimDetailPage'
+import { useClaimsStore } from '@/stores'
 
 export const Route = createFileRoute('/claims/$claimId')({
-  component: ClaimDetailPage,
+  component: ClaimDetailRoute,
 })
 
-function ClaimDetailPage() {
+function ClaimDetailRoute() {
   const { claimId } = Route.useParams()
+  const { getClaimById, getPatientById } = useClaimsStore()
+  const claim = getClaimById(claimId)
+  const patient = claim ? getPatientById(claim.patientId) : undefined
+  const title = patient ? `${patient.firstName} ${patient.lastName}` : `Claim ${claimId}`
 
   return (
     <>
       <ContentHeader
         backTo={{ label: 'Back to Claims', href: '/claims' }}
-        title={`Claim ${claimId}`}
+        title={title}
       />
-      <Text c="dimmed">Claim detail placeholder — will show UB-04 sections.</Text>
+      <ClaimDetailPage claimId={claimId} />
     </>
   )
 }

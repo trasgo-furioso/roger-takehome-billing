@@ -189,7 +189,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T037 [US2] Playwright E2E test in `tests/e2e/us2-claim-detail.spec.ts`
+- [x] T037 [US2] Playwright E2E test in `tests/e2e/us2-claim-detail.spec.ts`
   - **Spec** (maps to spec.md US2 acceptance scenarios):
   - **Test 1 — Navigate to detail**: On `/claims`, click first claim card. Assert: URL matches `/claims/<id>`. Page shows `ContentHeader` with back button "Back to Claims" and patient name as title. Sections visible: Patient Info, Period, Diagnoses, Service Lines, Payer & Provider.
   - **Test 2 — Auto-save with notification**: On claim detail, clear and type a new NPI value in attending physician NPI `TextInput`. Wait 600ms (debounce). Assert: a Mantine `Notification` with "Saved" or success icon appears. Reload page. Assert: NPI field shows the new value (persisted to localStorage).
@@ -197,28 +197,28 @@
 
 ### Implementation
 
-- [ ] T038 [P] [US2] Create `useAutoSave` hook in `src/components/detail/useAutoSave.ts`
+- [x] T038 [P] [US2] Create `useAutoSave` hook in `src/components/detail/useAutoSave.ts`
   - **Design**: Custom hook wrapping `useDebouncedValue` from `@mantine/hooks` (500ms delay). On debounced value change, calls `updateClaimField(claimId, field, value)` on claims store, then `notifications.show({ message: 'Saved', color: 'green', autoClose: 2000 })` from `@mantine/notifications`. Returns `{ value, onChange, isSaving }`.
 
-- [ ] T039 [P] [US2] Create `PatientSection` in `src/components/detail/PatientSection.tsx`
+- [x] T039 [P] [US2] Create `PatientSection` in `src/components/detail/PatientSection.tsx`
   - **Design**: Mantine `Card` with `Card.Section` header "Patient Information". Uses `SimpleGrid cols={2}` for field layout. Fields: `TextInput` for first name, last name, MBI; `Select` for sex; `TextInput` for DOB (read-only display); address fields. Each field wired to `useAutoSave`.
 
-- [ ] T040 [P] [US2] Create `DiagnosesSection` in `src/components/detail/DiagnosesSection.tsx`
+- [x] T040 [P] [US2] Create `DiagnosesSection` in `src/components/detail/DiagnosesSection.tsx`
   - **Design**: Mantine `Card` with header "Diagnoses". Renders each diagnosis as a row in a `Stack`: `Group` with `Badge` for ICD-10 code, `Text` for plain-language description (from `icd10Codes` lookup), `Badge variant="light"` for "Principal" on the first. Sequence order.
 
-- [ ] T041 [P] [US2] Create `ServiceLinesSection` in `src/components/detail/ServiceLinesSection.tsx`
+- [x] T041 [P] [US2] Create `ServiceLinesSection` in `src/components/detail/ServiceLinesSection.tsx`
   - **Design**: Mantine `Card` with header "Service Lines". Each line as a row: `Group` with `Text fw={500}` for revenue code, `Text c="dimmed"` for description (from `revenueCodes` lookup), HCPCS/HIPPS code, date range, units, `Text fw={500}` for formatted charges.
 
-- [ ] T042 [P] [US2] Create `PayerSection` in `src/components/detail/PayerSection.tsx`
+- [x] T042 [P] [US2] Create `PayerSection` in `src/components/detail/PayerSection.tsx`
   - **Design**: Mantine `Card` with header "Payer & Provider". `SimpleGrid cols={2}`: `TextInput` for payer name, payer ID (read-only), `TextInput` for attending physician name, NPI (editable, wired to `useAutoSave`), Type of Bill (read-only `TextInput`).
 
-- [ ] T043 [US2] Create `ClaimDetailPage` in `src/components/detail/ClaimDetailPage.tsx`
+- [x] T043 [US2] Create `ClaimDetailPage` in `src/components/detail/ClaimDetailPage.tsx`
   - **Design**: Reads `claimId` from route params. Looks up claim via `getClaimById`. If not found: `Center` + `Text` "Claim not found" + `Anchor` back to `/claims`. If found: `Stack gap="lg"` rendering all sections in order: PatientSection, period dates (inline `Group` of read-only `TextInput`), DiagnosesSection, ServiceLinesSection, PayerSection. No Timeline section yet (US9).
 
-- [ ] T044 [US2] Wire ClaimDetailPage route in `src/routes/claims/$claimId.tsx`
+- [x] T044 [US2] Wire ClaimDetailPage route in `src/routes/claims/$claimId.tsx`
   - **Design**: Route component that renders `ContentHeader` with `backTo={{ label: 'Back to Claims', href: '/claims' }}`, `title` = patient full name, `action` = state-machine-driven button (placeholder for now — will be wired in US3/US4). Renders `ClaimDetailPage` below header.
 
-- [ ] T045 [US2] Make E2E tests pass — verify `tests/e2e/us2-claim-detail.spec.ts` passes.
+- [x] T045 [US2] Make E2E tests pass — verify `tests/e2e/us2-claim-detail.spec.ts` passes.
 
 **Checkpoint**: User Story 2 complete. Detail page renders all UB-04 sections, auto-save works, diagnoses show descriptions. E2E tests green.
 
