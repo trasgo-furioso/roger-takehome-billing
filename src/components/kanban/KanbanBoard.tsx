@@ -1,6 +1,6 @@
 import { ActionIcon, Group, Text, TextInput, Title } from '@mantine/core'
-import { DatePickerInput } from '@mantine/dates'
-import { IconSearch, IconX } from '@tabler/icons-react'
+import { DateRangePickerWithPresets } from './DateRangePickerWithPresets'
+import { IconRefresh, IconSearch, IconX } from '@tabler/icons-react'
 import { modals } from '@mantine/modals'
 import { useClaimsStore, useUIStore } from '@/stores'
 import { KanbanColumn } from './KanbanColumn'
@@ -57,36 +57,29 @@ export function KanbanBoard() {
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 'var(--mantine-spacing-md) var(--mantine-spacing-lg)' }}>
       {/* Header */}
       <Group justify="space-between" pb="sm" style={{ flexShrink: 0 }}>
-        <Group gap="sm">
-          <Title order={3}>Billing Manager</Title>
-          <ActionIcon variant="subtle" color="gray" size="sm" onClick={handleReset} title="Reset data">
-            <IconX size={14} />
-          </ActionIcon>
-        </Group>
+        <Title order={3}>Billing Manager</Title>
 
         <Group gap="sm">
           <TextInput
             placeholder="Search patient"
             leftSection={<IconSearch size={16} />}
+            rightSection={patientSearch ? (
+              <ActionIcon variant="subtle" color="gray" size="xs" onClick={() => setPatientSearch('')}>
+                <IconX size={14} />
+              </ActionIcon>
+            ) : undefined}
             value={patientSearch}
             onChange={(e) => setPatientSearch(e.currentTarget.value)}
             size="sm"
             style={{ width: 200 }}
           />
-          {hasActiveFilters() && (
-            <ActionIcon variant="subtle" color="gray" onClick={clearFilters} title="Clear all filters">
-              <IconX size={16} />
-            </ActionIcon>
-          )}
-          <DatePickerInput
-            type="range"
-            placeholder="Service period"
+          <DateRangePickerWithPresets
             value={dateValue}
             onChange={handleDateChange}
-            clearable
-            size="sm"
-            style={{ width: 260 }}
           />
+          <ActionIcon variant="subtle" color="red" onClick={handleReset} title="Reset data">
+            <IconRefresh size={16} />
+          </ActionIcon>
         </Group>
       </Group>
 
