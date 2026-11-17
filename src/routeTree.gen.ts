@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ClaimsIndexRouteImport } from './routes/claims/index'
 import { Route as ClaimsClaimIdRouteImport } from './routes/claims/$claimId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClaimsIndexRoute = ClaimsIndexRouteImport.update({
-  id: '/claims/',
-  path: '/claims/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClaimsClaimIdRoute = ClaimsClaimIdRouteImport.update({
@@ -32,31 +26,27 @@ const ClaimsClaimIdRoute = ClaimsClaimIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/claims/$claimId': typeof ClaimsClaimIdRoute
-  '/claims/': typeof ClaimsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/claims/$claimId': typeof ClaimsClaimIdRoute
-  '/claims': typeof ClaimsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/claims/$claimId': typeof ClaimsClaimIdRoute
-  '/claims/': typeof ClaimsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/claims/$claimId' | '/claims/'
+  fullPaths: '/' | '/claims/$claimId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/claims/$claimId' | '/claims'
-  id: '__root__' | '/' | '/claims/$claimId' | '/claims/'
+  to: '/' | '/claims/$claimId'
+  id: '__root__' | '/' | '/claims/$claimId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClaimsClaimIdRoute: typeof ClaimsClaimIdRoute
-  ClaimsIndexRoute: typeof ClaimsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/claims/': {
-      id: '/claims/'
-      path: '/claims'
-      fullPath: '/claims/'
-      preLoaderRoute: typeof ClaimsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/claims/$claimId': {
@@ -88,7 +71,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClaimsClaimIdRoute: ClaimsClaimIdRoute,
-  ClaimsIndexRoute: ClaimsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

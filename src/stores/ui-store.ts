@@ -1,20 +1,27 @@
 import { create } from 'zustand'
 
 interface UIState {
-  expandedCardId: string | null
-  expandedCardMode: 'readiness' | 'payment' | null
+  patientSearch: string
+  dateRange: [string | null, string | null]
 
-  expandCard: (claimId: string, mode: 'readiness' | 'payment') => void
-  collapseCard: () => void
+  setPatientSearch: (value: string) => void
+  setDateRange: (range: [string | null, string | null]) => void
+  clearFilters: () => void
+  hasActiveFilters: () => boolean
 }
 
-export const useUIStore = create<UIState>()((set) => ({
-  expandedCardId: null,
-  expandedCardMode: null,
+export const useUIStore = create<UIState>()((set, get) => ({
+  patientSearch: '',
+  dateRange: [null, null],
 
-  expandCard: (claimId, mode) =>
-    set({ expandedCardId: claimId, expandedCardMode: mode }),
+  setPatientSearch: (value) => set({ patientSearch: value }),
 
-  collapseCard: () =>
-    set({ expandedCardId: null, expandedCardMode: null }),
+  setDateRange: (range) => set({ dateRange: range }),
+
+  clearFilters: () => set({ patientSearch: '', dateRange: [null, null] }),
+
+  hasActiveFilters: () => {
+    const state = get()
+    return state.patientSearch !== '' || state.dateRange[0] !== null || state.dateRange[1] !== null
+  },
 }))

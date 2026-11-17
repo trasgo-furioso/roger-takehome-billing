@@ -1,16 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ContentHeader } from '@/components/layout/ContentHeader'
-import { DashboardPage } from '@/components/dashboard/DashboardPage'
+import { KanbanBoard } from '@/components/kanban/KanbanBoard'
 
 export const Route = createFileRoute('/')({
-  component: DashboardRoute,
+  component: KanbanBoard,
 })
-
-function DashboardRoute() {
-  return (
-    <>
-      <ContentHeader title="Dashboard" />
-      <DashboardPage />
-    </>
-  )
-}

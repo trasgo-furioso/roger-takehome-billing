@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react'
-import { AppShell } from '@mantine/core'
-import { Sidebar } from './Sidebar'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -8,11 +6,8 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <AppShell navbar={{ width: 250, breakpoint: 'sm' }} padding="md">
-      <AppShell.Navbar>
-        <Sidebar />
-      </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
-    </AppShell>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      {children}
+    </div>
   )
 }

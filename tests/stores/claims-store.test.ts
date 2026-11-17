@@ -85,6 +85,7 @@ describe('claims store', () => {
         deductibleAmount: 0,
         otherAdjustment: 0,
         checkEftReference: 'EFT-123',
+        claimControlNumber: 'DCN-TEST-001',
         remittanceDate: '2026-11-15',
       }
       state.postPayment(submittedClaim!.id, remittance)
@@ -104,6 +105,7 @@ describe('claims store', () => {
         deductibleAmount: 0,
         otherAdjustment: 0,
         checkEftReference: 'X',
+        claimControlNumber: 'DCN-TEST-002',
         remittanceDate: '2026-11-15',
       }
       expect(() => state.postPayment(nonSubmitted.id, remittance)).toThrow()
@@ -142,6 +144,45 @@ describe('claims store', () => {
       expect(updated.attendingPhysicianNpi).toBe('9999999999')
       expect(updated.timeline.length).toBe(originalTimelineLength + 1)
       expect(updated.timeline[updated.timeline.length - 1].eventType).toBe('Edited')
+    })
+  })
+
+  describe('groupByStatus', () => {
+    it('groups claims by status with all statuses present', () => {
+      const state = useClaimsStore.getState()
+      const grouped = state.groupByStatus({})
+      expect(grouped.size).toBe(6)
+      expect(grouped.has('Ready for Review')).toBe(true)
+      expect(grouped.has('Submitted')).toBe(true)
+      expect(grouped.has('Rejected')).toBe(true)
+      expect(grouped.has('Denied')).toBe(true)
+      expect(grouped.has('Paid')).toBe(true)
+      expect(grouped.has('Written Off')).toBe(true)
+
+      // Total should match all claims
+      const total = Array.from(grouped.values()).reduce((sum, arr) => sum + arr.length, 0)
+      expect(total).toBe(state.claims.length)
+    })
+
+    it('sorts claims within each status by statusChangedAt ascending (oldest first)', () => {
+      const state = useClaimsStore.getState()
+      const grouped = state.groupByStatus({})
+      for (const claims of grouped.values()) {
+        for (let i = 1; i < claims.length; i++) {
+          expect(new Date(claims[i].statusChangedAt).getTime()).toBeGreaterThanOrEqual(
+            new Date(claims[i - 1].statusChangedAt).getTime(),
+          )
+        }
+      }
+    })
+
+    it('respects patient filter', () => {
+      const state = useClaimsStore.getState()
+      const patient = state.patients[0]
+      const grouped = state.groupByStatus({ patient: patient.firstName })
+      const total = Array.from(grouped.values()).reduce((sum, arr) => sum + arr.length, 0)
+      const expected = state.claims.filter((c) => c.patientId === patient.id).length
+      expect(total).toBe(expected)
     })
   })
 

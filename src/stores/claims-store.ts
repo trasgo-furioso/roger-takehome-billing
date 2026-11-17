@@ -23,6 +23,7 @@ interface ClaimsState {
   getPatientById: (id: string) => Patient | undefined
   getEpisodeByClaimId: (claimId: string) => Episode | undefined
   getClaimsFiltered: (params: ClaimSearchParams) => Claim[]
+  groupByStatus: (params: ClaimSearchParams) => Map<ClaimStatus, Claim[]>
   updateClaimField: (claimId: string, field: string, value: unknown) => void
   submitClaim: (claimId: string) => void
   postPayment: (claimId: string, remittance: Remittance) => void
@@ -90,6 +91,19 @@ export const useClaimsStore = create<ClaimsState>()(
           })
         }
         return result
+      },
+
+      groupByStatus: (params) => {
+        const filtered = get().getClaimsFiltered(params)
+        const statuses: ClaimStatus[] = ['Ready for Review', 'Submitted', 'Rejected', 'Denied', 'Paid', 'Written Off']
+        const grouped = new Map<ClaimStatus, Claim[]>()
+        for (const status of statuses) {
+          const claims = filtered
+            .filter((c) => c.status === status)
+            .sort((a, b) => new Date(a.statusChangedAt).getTime() - new Date(b.statusChangedAt).getTime())
+          grouped.set(status, claims)
+        }
+        return grouped
       },
 
       updateClaimField: (claimId, field, value) => {
@@ -171,7 +185,7 @@ export const useClaimsStore = create<ClaimsState>()(
                   id: `tl-${Date.now()}`,
                   eventType: 'Paid' as const,
                   timestamp: now,
-                  details: `Payment received: $${remittance.paymentAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+                  details: `Payment received: $${remittance.paymentAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} | Check/EFT: ${remittance.checkEftReference} | ICN: ${remittance.claimControlNumber}`,
                 },
               ],
             }

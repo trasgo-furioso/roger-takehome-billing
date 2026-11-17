@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { z } from 'zod/v4'
 import { Button, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { ContentHeader } from '@/components/layout/ContentHeader'
@@ -7,12 +8,18 @@ import { PaymentForm } from '@/components/claims/PaymentForm'
 import { useClaimsStore } from '@/stores'
 import { resolveAction } from '@/utils'
 
+const searchSchema = z.object({
+  fix: z.string().optional().catch(undefined),
+})
+
 export const Route = createFileRoute('/claims/$claimId')({
+  validateSearch: (search) => searchSchema.parse(search),
   component: ClaimDetailRoute,
 })
 
 function ClaimDetailRoute() {
   const { claimId } = Route.useParams()
+  const { fix } = Route.useSearch()
   const navigate = useNavigate()
   const { getClaimById, getPatientById, submitClaim, writeOffClaim } = useClaimsStore()
   const [paymentOpen, { toggle: togglePayment }] = useDisclosure(false)
@@ -26,19 +33,19 @@ function ClaimDetailRoute() {
     if (!action || !claim) return
     if (action.action === 'submit') {
       submitClaim(claimId)
-      navigate({ to: '/claims' })
+      navigate({ to: '/' })
     } else if (action.action === 'payment') {
       togglePayment()
     } else if (action.action === 'writeOff') {
       writeOffClaim(claimId)
-      navigate({ to: '/claims' })
+      navigate({ to: '/' })
     }
   }
 
   const handleSecondaryAction = () => {
     if (!claim) return
     writeOffClaim(claimId)
-    navigate({ to: '/claims' })
+    navigate({ to: '/' })
   }
 
   const renderActionButtons = () => {
@@ -58,14 +65,14 @@ function ClaimDetailRoute() {
   return (
     <>
       <ContentHeader
-        backTo={{ label: 'Back to Claims', href: '/claims' }}
+        backTo={{ label: 'Back to Board', href: '/' }}
         title={title}
         action={renderActionButtons()}
       />
       {paymentOpen && claim && (
         <PaymentForm claimId={claimId} expectedAmount={claim.expectedAmount} />
       )}
-      <ClaimDetailPage claimId={claimId} />
+      <ClaimDetailPage claimId={claimId} fixCode={fix} />
     </>
   )
 }
