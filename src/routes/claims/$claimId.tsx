@@ -22,12 +22,12 @@ function ClaimDetailRoute() {
   const title = patient ? `${patient.firstName} ${patient.lastName}` : `Claim ${claimId}`
 
   return (
-    <>
+    <div style={{ padding: 'var(--mantine-spacing-md) var(--mantine-spacing-lg) var(--mantine-spacing-lg)' }}>
       <ContentHeader
         backTo={{ label: 'Back to Board', href: '/' }}
         title={title}
       />
       <ClaimDetailPage claimId={claimId} fixCode={fix} />
-    </>
+    </div>
   )
 }

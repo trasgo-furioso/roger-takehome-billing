@@ -1,6 +1,6 @@
 import { Badge, Group, Paper, ScrollArea, Stack, Text } from '@mantine/core'
 import type { Claim, ClaimStatus, Patient } from '@/models'
-import { statusColor } from '@/utils'
+import { statusColor, formatCurrency } from '@/utils'
 import { KanbanClaimCard } from './KanbanClaimCard'
 
 interface KanbanColumnProps {
@@ -11,6 +11,7 @@ interface KanbanColumnProps {
 
 export function KanbanColumn({ status, claims, patients }: KanbanColumnProps) {
   const color = statusColor(status)
+  const totalAmount = claims.reduce((sum, c) => sum + c.expectedAmount, 0)
 
   const getPatient = (patientId: string) => patients.find((p) => p.id === patientId)
 
@@ -27,9 +28,14 @@ export function KanbanColumn({ status, claims, patients }: KanbanColumnProps) {
         overflow: 'hidden',
       }}
     >
-      <Group gap="sm" p="sm" pb="xs">
-        <Text fw={600} fz="sm">{status}</Text>
-        <Badge variant="filled" size="sm" color={color}>{claims.length}</Badge>
+      <Group gap="sm" p="sm" pb="xs" justify="space-between">
+        <Group gap="sm">
+          <Text fw={600} fz="sm">{status}</Text>
+          <Badge variant="filled" size="sm" color={color}>{claims.length}</Badge>
+        </Group>
+        {claims.length > 0 && (
+          <Text fz="xs" c="dimmed" fw={500}>{formatCurrency(totalAmount)}</Text>
+        )}
       </Group>
 
       <ScrollArea type="auto" offsetScrollbars style={{ flex: 1 }} p="xs" pt={0}>

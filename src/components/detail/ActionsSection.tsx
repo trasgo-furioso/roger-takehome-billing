@@ -68,13 +68,13 @@ export function ActionsSection({ claim }: ActionsSectionProps) {
       {claim.status === 'Denied' && claim.denialReason && (
         <Stack gap="xs" mt="sm">
           <Group gap="xs" px="xs" py={6} style={{ background: 'var(--mantine-color-red-0)', borderRadius: 6 }}>
-            <Badge color="red" size="sm">{claim.denialReason.code}</Badge>
-            <Text fz="sm">{claim.denialReason.description}</Text>
+            <Badge color="red" size="sm">{claim.denialReason.carcCode}</Badge>
+            <Text fz="sm">{claim.denialReason.carcDescription}</Text>
           </Group>
           <Group gap="lg">
             <div>
               <Text fz="xs" c="dimmed">Amount at Risk</Text>
-              <Text fz="sm" fw={600} c="red">{formatCurrency(claim.expectedAmount)}</Text>
+              <Text fz="sm" fw={600} c="red">{formatCurrency(claim.denialReason.amountAtRisk)}</Text>
             </div>
           </Group>
         </Stack>

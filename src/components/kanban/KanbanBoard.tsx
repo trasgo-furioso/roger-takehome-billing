@@ -54,9 +54,9 @@ export function KanbanBoard() {
   const totalClaims = Array.from(grouped.values()).reduce((sum, arr) => sum + arr.length, 0)
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 'var(--mantine-spacing-md) var(--mantine-spacing-lg)' }}>
       {/* Header */}
-      <Group justify="space-between" p="md" pb="sm" style={{ flexShrink: 0 }}>
+      <Group justify="space-between" pb="sm" style={{ flexShrink: 0 }}>
         <Group gap="sm">
           <Title order={3}>Billing Manager</Title>
           <ActionIcon variant="subtle" color="gray" size="sm" onClick={handleReset} title="Reset data">
@@ -112,7 +112,7 @@ export function KanbanBoard() {
             display: 'flex',
             gap: 'var(--mantine-spacing-md)',
             overflowX: 'auto',
-            padding: '0 var(--mantine-spacing-md) var(--mantine-spacing-md)',
+            padding: 0,
             minHeight: 0,
           }}
         >
@@ -126,6 +126,6 @@ export function KanbanBoard() {
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }
