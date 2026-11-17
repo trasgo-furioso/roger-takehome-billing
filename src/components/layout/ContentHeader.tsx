@@ -11,7 +11,7 @@ interface ContentHeaderProps {
 
 export function ContentHeader({ backTo, title, action }: ContentHeaderProps) {
   return (
-    <Group justify="space-between" mb="md">
+    <Group justify="space-between" mt="md" mb="md">
       <Group>
         {backTo && (
           <Button

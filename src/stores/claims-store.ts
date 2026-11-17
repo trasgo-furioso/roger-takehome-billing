@@ -110,7 +110,7 @@ export const useClaimsStore = create<ClaimsState>()(
         set((state) => ({
           claims: state.claims.map((c) => {
             if (c.id !== claimId) return c
-            return {
+            const updated = {
               ...c,
               [field]: value,
               timeline: [
@@ -123,6 +123,16 @@ export const useClaimsStore = create<ClaimsState>()(
                 },
               ],
             }
+            // Recompute readiness when NPI changes
+            if (field === 'attendingPhysicianNpi') {
+              const npiPresent = typeof value === 'string' && value.trim().length > 0
+              const readiness = { ...updated.readiness, attendingPhysicianNpi: npiPresent }
+              readiness.allPassing = readiness.oasisAccepted && readiness.planOfCareSigned &&
+                readiness.allVisitsDocumented && readiness.attendingPhysicianNpi &&
+                readiness.diagnosesCoded && readiness.hippsCodeGenerated && readiness.revenueCodesValid
+              updated.readiness = readiness
+            }
+            return updated
           }),
         }))
       },

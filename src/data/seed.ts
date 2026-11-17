@@ -73,8 +73,8 @@ export const seedEpisodes: Episode[] = [
   { id: 'e6', patientId: 'p6', startDate: '2026-06-01', endDate: '2026-07-31', certifyingPhysicianName: 'Dr. David Kim', certifyingPhysicianNpi: '6789012345', planOfCareSigned: true },
   { id: 'e7', patientId: 'p1', startDate: '2026-10-01', endDate: '2026-11-30', certifyingPhysicianName: 'Dr. Sarah Chen', certifyingPhysicianNpi: '1234567890', planOfCareSigned: true },
   { id: 'e8', patientId: 'p2', startDate: '2026-10-01', endDate: '2026-11-30', certifyingPhysicianName: 'Dr. Michael Brown', certifyingPhysicianNpi: '2345678901', planOfCareSigned: true },
-  // Episode with unsigned POC for failing readiness
-  { id: 'e9', patientId: 'p3', startDate: '2026-10-20', endDate: '2026-12-19', certifyingPhysicianName: 'Dr. Emily Davis', certifyingPhysicianNpi: '3456789012', planOfCareSigned: false },
+  // Episode for clm-003 — NPI missing on claim (not on episode)
+  { id: 'e9', patientId: 'p3', startDate: '2026-10-20', endDate: '2026-12-19', certifyingPhysicianName: 'Dr. Emily Davis', certifyingPhysicianNpi: '3456789012', planOfCareSigned: true },
 ]
 
 export const seedBillingPeriods: BillingPeriod[] = [
@@ -119,8 +119,8 @@ const allPassingReadiness: Claim['readiness'] = {
 }
 
 const failingReadiness: Claim['readiness'] = {
-  oasisAccepted: true, planOfCareSigned: false, allVisitsDocumented: true,
-  attendingPhysicianNpi: true, diagnosesCoded: true, hippsCodeGenerated: true,
+  oasisAccepted: true, planOfCareSigned: true, allVisitsDocumented: true,
+  attendingPhysicianNpi: false, diagnosesCoded: true, hippsCodeGenerated: true,
   revenueCodesValid: true, allPassing: false,
 }
 
@@ -163,13 +163,13 @@ export const seedClaims: Claim[] = [
   {
     id: 'clm-003', billingPeriodId: 'bp15', patientId: 'p3', status: 'Ready for Review',
     typeOfBill: '032X', fromDate: '2026-10-20', throughDate: '2026-11-18',
-    attendingPhysicianName: 'Dr. Emily Davis', attendingPhysicianNpi: '3456789012',
+    attendingPhysicianName: 'Dr. Emily Davis', attendingPhysicianNpi: '',
     payerName: 'Medicare', payerId: 'MCR001', totalCharges: 3900, expectedAmount: 3400,
     hippsCode: '3CHMU', diagnoses: [
       { id: 'd6', icd10Code: 'J44.1', description: 'COPD with acute exacerbation', isPrincipal: true, sequence: 1 },
     ],
     serviceLines: makeServiceLines('3CHMU'),
-    readiness: failingReadiness, // Plan of Care not signed
+    readiness: failingReadiness, // Physician NPI missing
     opiAssessment: { id: 'oa3', assessmentType: 'Start of Care', status: 'Accepted', completionDate: '2026-10-18' },
     submissionDate: null, rejectionReason: null, denialReason: null, remittance: null,
     timeline: [{ id: 'tl3', eventType: 'Created', timestamp: '2026-10-20T10:00:00Z', details: null }],
