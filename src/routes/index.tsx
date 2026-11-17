@@ -1,16 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ContentHeader } from '@/components/layout/ContentHeader'
-import { Text } from '@mantine/core'
+import { DashboardPage } from '@/components/dashboard/DashboardPage'
 
 export const Route = createFileRoute('/')({
-  component: DashboardPage,
+  component: DashboardRoute,
 })
 
-function DashboardPage() {
+function DashboardRoute() {
   return (
     <>
       <ContentHeader title="Dashboard" />
-      <Text c="dimmed">Dashboard placeholder — will show summary tiles.</Text>
+      <DashboardPage />
     </>
   )
 }

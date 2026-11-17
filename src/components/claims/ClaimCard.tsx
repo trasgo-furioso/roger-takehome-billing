@@ -1,5 +1,5 @@
 import { Alert, Badge, Button, Card, Collapse, Group, Text } from '@mantine/core'
-import { IconAlertTriangle } from '@tabler/icons-react'
+import { IconAlertOctagon, IconAlertTriangle } from '@tabler/icons-react'
 import { useNavigate } from '@tanstack/react-router'
 import type { Claim, Patient } from '@/models'
 import { formatCurrency, formatDate, daysInStatus, statusColor } from '@/utils'
@@ -17,6 +17,7 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
   const days = daysInStatus(claim.statusChangedAt)
   const navigate = useNavigate()
   const submitClaim = useClaimsStore((s) => s.submitClaim)
+  const writeOffClaim = useClaimsStore((s) => s.writeOffClaim)
   const expandedCardId = useUIStore((s) => s.expandedCardId)
   const expandedCardMode = useUIStore((s) => s.expandedCardMode)
   const expandCard = useUIStore((s) => s.expandCard)
@@ -56,6 +57,18 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
     navigate({ to: '/claims/$claimId', params: { claimId: claim.id } })
   }
 
+  const handleAppeal = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    navigate({ to: '/claims/$claimId', params: { claimId: claim.id } })
+  }
+
+  const handleWriteOff = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    writeOffClaim(claim.id)
+  }
+
   const renderActionButton = () => {
     if (claim.status === 'Ready for Review') {
       if (claim.readiness.allPassing) {
@@ -68,6 +81,14 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
     }
     if (claim.status === 'Rejected') {
       return <Button variant="light" color="orange" size="xs" onClick={handleFix}>Fix</Button>
+    }
+    if (claim.status === 'Denied') {
+      return (
+        <Group gap="xs">
+          <Button variant="light" size="xs" onClick={handleAppeal}>Appeal</Button>
+          <Button variant="subtle" color="gray" size="xs" onClick={handleWriteOff}>Write Off</Button>
+        </Group>
+      )
     }
     return null
   }
@@ -107,6 +128,26 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
           <Group gap="xs">
             <Badge color="orange" size="sm">{claim.rejectionReason.code}</Badge>
             <Text fz="sm">{claim.rejectionReason.description}</Text>
+          </Group>
+        </Alert>
+      )}
+
+      {/* Denial reason display */}
+      {claim.status === 'Denied' && claim.denialReason && (
+        <Alert color="red" icon={<IconAlertOctagon size={16} />} mt="xs" data-testid="denial-reason">
+          <Group gap="xs" wrap="wrap">
+            <Badge color="red" size="sm">{claim.denialReason.carcCode}</Badge>
+            <Text fz="sm">{claim.denialReason.carcDescription}</Text>
+          </Group>
+          {claim.denialReason.rarcCode && (
+            <Group gap="xs" mt="xs">
+              <Badge color="red" variant="outline" size="sm">{claim.denialReason.rarcCode}</Badge>
+              <Text fz="sm" c="dimmed">{claim.denialReason.rarcDescription}</Text>
+            </Group>
+          )}
+          <Group gap="lg" mt="xs">
+            <Text fw={500} fz="sm">At risk: {formatCurrency(claim.denialReason.amountAtRisk)}</Text>
+            <Text fz="xs" c="dimmed">{daysInStatus(claim.denialReason.denialDate)} days since denial</Text>
           </Group>
         </Alert>
       )}

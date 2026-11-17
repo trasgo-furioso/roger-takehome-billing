@@ -355,24 +355,24 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T062 [US7] Playwright E2E test in `tests/e2e/us7-dashboard.spec.ts`
+- [x] T062 [US7] Playwright E2E test in `tests/e2e/us7-dashboard.spec.ts`
   - **Spec** (maps to spec.md US7 acceptance scenarios):
   - **Test 1 — Tiles render**: Navigate to `/`. Assert: status tiles present for Ready for Review, Submitted, Rejected, Denied, Paid. AR aging tiles present for 0-30, 31-60, 61-90, 90+ days. Each tile shows a count number and a dollar amount.
   - **Test 2 — Tile navigation**: Click the "Rejected" status tile. Assert: URL is `/claims?status=Rejected`. Claim list shows only rejected claims. Click back to Dashboard. Click "31-60 days" aging tile. Assert: URL is `/claims?aging=31-60`.
 
 ### Implementation
 
-- [ ] T063 [P] [US7] Create `SummaryTile` in `src/components/dashboard/SummaryTile.tsx`
+- [x] T063 [P] [US7] Create `SummaryTile` in `src/components/dashboard/SummaryTile.tsx`
   - **Design**: Mantine `Card` with `shadow="sm"` + `padding="md"` + `radius="md"` + `withBorder` + `component={Link}` (TanStack Router `Link`). Internal layout: `Stack gap="xs" align="center"` — `Text fz="xl" fw={700}` for count, `Text fz="sm" c="dimmed"` for formatted dollar total, `Badge` or `Text fw={500}` for label. Card has subtle `bg` color based on status or aging bucket. Hover effect via `style={{ cursor: 'pointer' }}`.
   - Props: `label: string`, `count: number`, `total: number`, `color: MantineColor`, `linkSearch: ClaimSearchParams`
 
-- [ ] T064 [US7] Create `DashboardPage` in `src/components/dashboard/DashboardPage.tsx`
+- [x] T064 [US7] Create `DashboardPage` in `src/components/dashboard/DashboardPage.tsx`
   - **Design**: Reads all claims from `useClaimsStore()`. Computes status counts/totals and aging bucket counts/totals using `arAgingBucket()`. Renders two `SimpleGrid cols={5}` (status tiles) and `SimpleGrid cols={4}` (aging tiles) groups with `Title order={4}` headers "Claims by Status" and "Accounts Receivable Aging". Each cell is a `SummaryTile`.
 
-- [ ] T065 [US7] Wire DashboardPage route in `src/routes/index.tsx`
+- [x] T065 [US7] Wire DashboardPage route in `src/routes/index.tsx`
   - **Design**: Route renders `ContentHeader` with title="Dashboard" (no back button, no action). Renders `DashboardPage` below.
 
-- [ ] T066 [US7] Make E2E tests pass — verify `tests/e2e/us7-dashboard.spec.ts` passes.
+- [x] T066 [US7] Make E2E tests pass — verify `tests/e2e/us7-dashboard.spec.ts` passes.
 
 **Checkpoint**: User Story 7 complete. Dashboard tiles show counts/amounts, clicking navigates to filtered list. E2E tests green.
 
@@ -388,7 +388,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T067 [US8] Playwright E2E test in `tests/e2e/us8-denied.spec.ts`
+- [x] T067 [US8] Playwright E2E test in `tests/e2e/us8-denied.spec.ts`
   - **Spec** (maps to spec.md US8 acceptance scenarios):
   - **Test 1 — Denial info display**: On `/claims`, find a "Denied" card. Assert: card shows CARC code + plain-language translation, dollar amount at risk, "X days since denial" text. Two action buttons visible: "Appeal" and "Write Off".
   - **Test 2 — Appeal navigates**: Click "Appeal" on denied card. Assert: URL matches `/claims/<id>`. Detail page opens.
@@ -396,13 +396,13 @@
 
 ### Implementation
 
-- [ ] T068 [US8] Update `ClaimCard` denial display in `src/components/claims/ClaimCard.tsx`
+- [x] T068 [US8] Update `ClaimCard` denial display in `src/components/claims/ClaimCard.tsx`
   - **Design**: When `claim.status === 'Denied'`: below standard content, render `Alert` with `color="red"` + `icon={IconAlertOctagon}` showing: `Badge` for CARC code, `Text` for plain-language description, `Text fw={500}` for amount at risk (formatted), `Text fz="xs" c="dimmed"` for "X days since denial" (computed from `claim.denialReason.denialDate`). Action area: `Group` with two buttons — `Button variant="light"` "Appeal" (navigates to detail) and `Button variant="subtle" color="gray"` "Write Off" (calls `writeOffClaim(claimId)`). If RARC code exists, show it below CARC.
 
-- [ ] T069 [US8] Wire detail header for denied claims in `src/routes/claims/$claimId.tsx`
+- [x] T069 [US8] Wire detail header for denied claims in `src/routes/claims/$claimId.tsx`
   - **Design**: `resolveAction()` for Denied + passing returns primary "Resubmit Appeal" and secondary "Write Off". Header shows primary as `Button`, secondary as `Button variant="subtle"` next to it. Already partially wired from T052 — extend to render secondary action.
 
-- [ ] T070 [US8] Make E2E tests pass — verify `tests/e2e/us8-denied.spec.ts` passes.
+- [x] T070 [US8] Make E2E tests pass — verify `tests/e2e/us8-denied.spec.ts` passes.
 
 **Checkpoint**: User Story 8 complete. Denied claims show full denial info, Appeal and Write Off work. E2E tests green.
 
@@ -418,7 +418,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T071 [US9] Playwright E2E test in `tests/e2e/us9-timeline.spec.ts`
+- [x] T071 [US9] Playwright E2E test in `tests/e2e/us9-timeline.spec.ts`
   - **Spec** (maps to spec.md US9 acceptance scenarios):
   - **Test 1 — Timeline renders**: Navigate to a claim detail page. Assert: a "Timeline" section is visible using Mantine `Timeline` component. Entries are in newest-first order (first entry has latest timestamp).
   - **Test 2 — Submitted entry**: Find a claim that was submitted (seed data). View timeline. Assert: an entry with "Submitted" event type and submission date/time exists.
@@ -428,7 +428,7 @@
 
 ### Implementation
 
-- [ ] T072 [US9] Create `TimelineSection` in `src/components/detail/TimelineSection.tsx`
+- [x] T072 [US9] Create `TimelineSection` in `src/components/detail/TimelineSection.tsx`
   - **Design**: Mantine `Card` with header "Claim Timeline". Renders Mantine `Timeline` with `active={events.length - 1}` (all items complete). Sort events by timestamp descending (newest first). Each `Timeline.Item`:
     - `title`: event type string (e.g., "Submitted", "Rejected", "Paid")
     - `bullet`: `ThemeIcon` with event-type-specific icon — Created=`IconPlus`, Submitted=`IconSend`, Rejected=`IconX`, Denied=`IconBan`, Resubmitted=`IconRefresh`, Paid=`IconCheck`, Written Off=`IconTrash`, Edited=`IconPencil`
@@ -437,10 +437,10 @@
   - Props: `events: TimelineEvent[]`
   - Note: `Timeline.Item` must be a direct child of `Timeline` — do not wrap in HOC or fragment.
 
-- [ ] T073 [US9] Add TimelineSection to ClaimDetailPage in `src/components/detail/ClaimDetailPage.tsx`
+- [x] T073 [US9] Add TimelineSection to ClaimDetailPage in `src/components/detail/ClaimDetailPage.tsx`
   - **Design**: Append `TimelineSection` as the last section in the detail page `Stack`, passing `claim.timeline`.
 
-- [ ] T074 [US9] Make E2E tests pass — verify `tests/e2e/us9-timeline.spec.ts` passes.
+- [x] T074 [US9] Make E2E tests pass — verify `tests/e2e/us9-timeline.spec.ts` passes.
 
 **Checkpoint**: User Story 9 complete. Timeline shows all state transitions with details. E2E tests green.
 

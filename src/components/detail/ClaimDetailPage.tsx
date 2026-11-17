@@ -6,6 +6,7 @@ import { PatientSection } from './PatientSection'
 import { DiagnosesSection } from './DiagnosesSection'
 import { ServiceLinesSection } from './ServiceLinesSection'
 import { PayerSection } from './PayerSection'
+import { TimelineSection } from './TimelineSection'
 
 interface ClaimDetailPageProps {
   claimId: string
@@ -41,6 +42,7 @@ export function ClaimDetailPage({ claimId }: ClaimDetailPageProps) {
       <DiagnosesSection diagnoses={claim.diagnoses} />
       <ServiceLinesSection serviceLines={claim.serviceLines} />
       <PayerSection claim={claim} />
+      <TimelineSection events={claim.timeline} />
     </Stack>
   )
 }
