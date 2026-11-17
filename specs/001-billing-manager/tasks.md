@@ -126,7 +126,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T030 [US1] Playwright E2E test in `tests/e2e/us1-claim-list.spec.ts`
+- [x] T030 [US1] Playwright E2E test in `tests/e2e/us1-claim-list.spec.ts`
   - **Spec** (maps to spec.md US1 acceptance scenarios):
   - **Test 1 — Cards render**: Navigate to `/claims`. Assert: page shows multiple Mantine `Card` components. Each card contains: patient name text (prominent, `fw={700}` or `fz="lg"`), period date range, payer text, a `Badge` with status text, dollar amount, and "X days" in status text.
   - **Test 2 — Filter by status**: On `/claims`, click "Filter" button in content header. Select "Ready for Review" from status `Select`. Assert: URL contains `?status=Ready+for+Review`. Only cards with "Ready for Review" badge are visible. Filter chip shows "Ready for Review" label.
@@ -137,7 +137,7 @@
 
 ### Implementation
 
-- [ ] T031 [P] [US1] Create `ClaimCard` component in `src/components/claims/ClaimCard.tsx`
+- [x] T031 [P] [US1] Create `ClaimCard` component in `src/components/claims/ClaimCard.tsx`
   - **Design**: Mantine `Card` with `shadow="sm"` + `padding="lg"` + `radius="md"` + `withBorder`. Internal layout:
     - Top row: `Group justify="space-between"` — left: `Text fz="lg" fw={700}` for patient name; right: `Badge` with `statusColor()` variant for claim status
     - Middle row: `Group` — `Text c="dimmed" fz="sm"` for period dates (formatted) | payer name | `Text fw={500}` for formatted currency amount
@@ -145,7 +145,7 @@
   - Props: `claim: Claim`, `patient: Patient`, `onCardClick: () => void`, `actionSlot?: ReactNode`
   - Clicking the card body navigates to `/claims/$claimId` via TanStack Router `useNavigate`
 
-- [ ] T032 [P] [US1] Create `FilterPanel` in `src/components/claims/FilterPanel.tsx`
+- [x] T032 [P] [US1] Create `FilterPanel` in `src/components/claims/FilterPanel.tsx`
   - **Design**: Mantine `Collapse` wrapping a `Stack` of filter controls:
     - `Select` for claim status (options from `ClaimStatus` enum, clearable)
     - `Select` for payer (options from unique payers in claims, clearable)
@@ -156,15 +156,15 @@
   - Props: `expanded: boolean`, `searchParams: ClaimSearchParams`
   - Note: Mantine v7 `Collapse` uses `expanded` prop (not `in` or `opened`)
 
-- [ ] T033 [P] [US1] Create `FilterChips` in `src/components/claims/FilterChips.tsx`
+- [x] T033 [P] [US1] Create `FilterChips` in `src/components/claims/FilterChips.tsx`
   - **Design**: Mantine `Group` of `Badge` components with `rightSection={<IconX size={14} />}` and `onClick` to dismiss. One chip per active filter. Renders only when there are active filters AND filter panel is collapsed.
   - Props: `searchParams: ClaimSearchParams`, `onRemove: (key: string) => void`
 
-- [ ] T034 [US1] Create `ClaimList` component in `src/components/claims/ClaimList.tsx`
+- [x] T034 [US1] Create `ClaimList` component in `src/components/claims/ClaimList.tsx`
   - **Design**: Mantine `Stack gap="md"` rendering `ClaimCard` for each filtered claim. Uses `useClaimsStore().getClaimsFiltered(searchParams)` with search params from route. Empty state: `Center` with `Text c="dimmed"` saying "No claims match your filters".
   - Reads search params from `Route.useSearch()` (TanStack Router typed search)
 
-- [ ] T035 [US1] Wire ClaimListPage route in `src/routes/claims/index.tsx`
+- [x] T035 [US1] Wire ClaimListPage route in `src/routes/claims/index.tsx`
   - **Design**: Route component that:
     - Validates search params with Zod schema (`ClaimSearchParams` — all optional, with `.catch()` defaults)
     - Renders `ContentHeader` with title="Claims", action=`Button` "Filter" with `IconFilter` toggling filter panel
@@ -173,7 +173,7 @@
     - Renders `ClaimList` with validated search params
   - Uses `useDisclosure` from `@mantine/hooks` for filter panel toggle
 
-- [ ] T036 [US1] Make E2E tests pass — verify `tests/e2e/us1-claim-list.spec.ts` passes. Fix any issues with selectors, data, or rendering.
+- [x] T036 [US1] Make E2E tests pass — verify `tests/e2e/us1-claim-list.spec.ts` passes. Fix any issues with selectors, data, or rendering.
 
 **Checkpoint**: User Story 1 complete. Claim list renders with cards, filters work via URL params, chips are dismissible. E2E tests green.
 
