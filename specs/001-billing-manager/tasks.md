@@ -266,19 +266,19 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T050 [US4] Playwright E2E test in `tests/e2e/us4-submit.spec.ts`
+- [x] T050 [US4] Playwright E2E test in `tests/e2e/us4-submit.spec.ts`
   - **Spec** (maps to spec.md US4 acceptance scenario):
   - **Test 1 — Submit from card**: On `/claims`, find a "Ready for Review" card with "Submit" action (all passing). Click "Submit". Assert: card's `Badge` changes to "Submitted". Submission date text appears on the card. "Submit" button is no longer present. Reload page — status persists.
 
 ### Implementation
 
-- [ ] T051 [US4] Wire Submit action in `ClaimCard` in `src/components/claims/ClaimCard.tsx`
+- [x] T051 [US4] Wire Submit action in `ClaimCard` in `src/components/claims/ClaimCard.tsx`
   - **Design**: When `resolveAction()` returns `action: 'submit'`, the button calls `submitClaim(claimId)` from claims store. After success, `collapseCard()` on UI store. Card re-renders with new status badge, submission date shown as `Text fz="xs" c="dimmed"` with formatted datetime.
 
-- [ ] T052 [US4] Wire Submit action in claim detail header in `src/routes/claims/$claimId.tsx`
+- [x] T052 [US4] Wire Submit action in claim detail header in `src/routes/claims/$claimId.tsx`
   - **Design**: `ContentHeader` action slot now uses `resolveAction(claim.status, readiness.allPassing)`. When action is 'submit': `Button` with label from action descriptor. On click: `submitClaim(claimId)`, then `navigate({ to: '/claims' })`.
 
-- [ ] T053 [US4] Make E2E tests pass — verify `tests/e2e/us4-submit.spec.ts` passes.
+- [x] T053 [US4] Make E2E tests pass — verify `tests/e2e/us4-submit.spec.ts` passes.
 
 **Checkpoint**: User Story 4 complete. Submit works from both card and detail page. E2E tests green.
 
@@ -294,7 +294,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T054 [US5] Playwright E2E test in `tests/e2e/us5-rejected.spec.ts`
+- [x] T054 [US5] Playwright E2E test in `tests/e2e/us5-rejected.spec.ts`
   - **Spec** (maps to spec.md US5 acceptance scenarios):
   - **Test 1 — Rejection reason display**: On `/claims`, find a "Rejected" card. Assert: card shows rejection reason code AND plain-language description text. Card has a "Fix" `Button`.
   - **Test 2 — Fix navigates to detail**: Click "Fix" on rejected card. Assert: URL matches `/claims/<id>`. Claim detail page opens.
@@ -302,10 +302,10 @@
 
 ### Implementation
 
-- [ ] T055 [P] [US5] Update `ClaimCard` rejection display in `src/components/claims/ClaimCard.tsx`
+- [x] T055 [P] [US5] Update `ClaimCard` rejection display in `src/components/claims/ClaimCard.tsx`
   - **Design**: When `claim.status === 'Rejected'`: below the standard card content, render a `Alert` with `color="orange"` and `icon={IconAlertTriangle}` showing `claim.rejectionReason.code` in `Badge` + `claim.rejectionReason.description` in `Text`. Action button: `Button variant="light" color="orange"` with "Fix" label. Clicking "Fix" navigates to `/claims/${claim.id}`.
 
-- [ ] T056 [US5] Make E2E tests pass — verify `tests/e2e/us5-rejected.spec.ts` passes. The resubmit button in detail header was already wired in T052 (action resolution handles 'Rejected' + passing → 'Resubmit Claim').
+- [x] T056 [US5] Make E2E tests pass — verify `tests/e2e/us5-rejected.spec.ts` passes. The resubmit button in detail header was already wired in T052 (action resolution handles 'Rejected' + passing → 'Resubmit Claim').
 
 **Checkpoint**: User Story 5 complete. Rejected claims show reasons, Fix navigates to detail, resubmission works. E2E tests green.
 
@@ -321,7 +321,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T057 [US6] Playwright E2E test in `tests/e2e/us6-payment.spec.ts`
+- [x] T057 [US6] Playwright E2E test in `tests/e2e/us6-payment.spec.ts`
   - **Spec** (maps to spec.md US6 acceptance scenarios):
   - **Test 1 — Pay action visible**: On `/claims`, find a "Submitted" card. Assert: card has a "Pay" `Button`.
   - **Test 2 — Payment form expands**: Click "Pay". Assert: card expands showing `NumberInput` fields for payment amount, contractual adjustment, deductible, other adjustment. "Confirm Payment" `Button` visible.
@@ -329,17 +329,17 @@
 
 ### Implementation
 
-- [ ] T058 [P] [US6] Create `PaymentForm` in `src/components/claims/PaymentForm.tsx`
+- [x] T058 [P] [US6] Create `PaymentForm` in `src/components/claims/PaymentForm.tsx`
   - **Design**: Mantine `Stack gap="sm"` rendered inside a `Collapse` (parent controls `expanded` prop). Fields: `NumberInput` with `prefix="$"` and `thousandSeparator` for payment amount, contractual adjustment, deductible amount, other adjustment. `Button color="green"` for "Confirm Payment" at bottom. On confirm: calls `postPayment(claimId, { paymentAmount, contractualAdjustment, deductibleAmount, otherAdjustment, checkEftReference: 'AUTO-' + Date.now(), remittanceDate: today })`, then `collapseCard()`.
   - Props: `claimId: string`, `expectedAmount: number`
 
-- [ ] T059 [US6] Update `ClaimCard` for payment in `src/components/claims/ClaimCard.tsx`
+- [x] T059 [US6] Update `ClaimCard` for payment in `src/components/claims/ClaimCard.tsx`
   - **Design**: When `claim.status === 'Submitted'`: action button is `Button variant="light" color="cyan"` with "Pay" label. Clicking calls `expandCard(claimId, 'payment')`. Renders `PaymentForm` inside the collapse when `expandedCardMode === 'payment'`. When `claim.status === 'Paid'`: card shows remittance summary below standard content — `Group` of `Text fz="sm"`: "Billed: $X" | "Paid: $X" | "Adj: $X".
 
-- [ ] T060 [US6] Wire "Post Payment" action in detail header in `src/routes/claims/$claimId.tsx`
+- [x] T060 [US6] Wire "Post Payment" action in detail header in `src/routes/claims/$claimId.tsx`
   - **Design**: When `resolveAction()` returns `action: 'payment'`, header button "Post Payment" toggles an inline payment form below the header (uses `useDisclosure`). Renders `PaymentForm` with `claimId` and `expectedAmount`. On confirm, navigates to `/claims`.
 
-- [ ] T061 [US6] Make E2E tests pass — verify `tests/e2e/us6-payment.spec.ts` passes.
+- [x] T061 [US6] Make E2E tests pass — verify `tests/e2e/us6-payment.spec.ts` passes.
 
 **Checkpoint**: User Story 6 complete. Payment posting works from card and detail. E2E tests green.
 

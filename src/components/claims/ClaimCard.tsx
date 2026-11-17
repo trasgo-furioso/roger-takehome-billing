@@ -1,8 +1,11 @@
-import { Badge, Button, Card, Collapse, Group, Text } from '@mantine/core'
+import { Alert, Badge, Button, Card, Collapse, Group, Text } from '@mantine/core'
+import { IconAlertTriangle } from '@tabler/icons-react'
+import { useNavigate } from '@tanstack/react-router'
 import type { Claim, Patient } from '@/models'
 import { formatCurrency, formatDate, daysInStatus, statusColor } from '@/utils'
-import { useUIStore } from '@/stores'
+import { useClaimsStore, useUIStore } from '@/stores'
 import { ReadinessChecklist } from './ReadinessChecklist'
+import { PaymentForm } from './PaymentForm'
 
 interface ClaimCardProps {
   claim: Claim
@@ -12,6 +15,8 @@ interface ClaimCardProps {
 
 export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
   const days = daysInStatus(claim.statusChangedAt)
+  const navigate = useNavigate()
+  const submitClaim = useClaimsStore((s) => s.submitClaim)
   const expandedCardId = useUIStore((s) => s.expandedCardId)
   const expandedCardMode = useUIStore((s) => s.expandedCardMode)
   const expandCard = useUIStore((s) => s.expandCard)
@@ -31,23 +36,38 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
   const handleSubmit = (e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()
-    // Will be wired in US4
+    submitClaim(claim.id)
+    collapseCard()
+  }
+
+  const handlePay = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (isExpanded && expandedCardMode === 'payment') {
+      collapseCard()
+    } else {
+      expandCard(claim.id, 'payment')
+    }
+  }
+
+  const handleFix = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    navigate({ to: '/claims/$claimId', params: { claimId: claim.id } })
   }
 
   const renderActionButton = () => {
     if (claim.status === 'Ready for Review') {
       if (claim.readiness.allPassing) {
-        return (
-          <Button variant="light" size="xs" onClick={handleSubmit}>
-            Submit Claim
-          </Button>
-        )
+        return <Button variant="light" size="xs" onClick={handleSubmit}>Submit Claim</Button>
       }
-      return (
-        <Button variant="light" size="xs" onClick={handleReview}>
-          Review
-        </Button>
-      )
+      return <Button variant="light" size="xs" onClick={handleReview}>Review</Button>
+    }
+    if (claim.status === 'Submitted') {
+      return <Button variant="light" color="cyan" size="xs" onClick={handlePay}>Pay</Button>
+    }
+    if (claim.status === 'Rejected') {
+      return <Button variant="light" color="orange" size="xs" onClick={handleFix}>Fix</Button>
     }
     return null
   }
@@ -81,6 +101,27 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
         </Group>
       </div>
 
+      {/* Rejection reason display */}
+      {claim.status === 'Rejected' && claim.rejectionReason && (
+        <Alert color="orange" icon={<IconAlertTriangle size={16} />} mt="xs" data-testid="rejection-reason">
+          <Group gap="xs">
+            <Badge color="orange" size="sm">{claim.rejectionReason.code}</Badge>
+            <Text fz="sm">{claim.rejectionReason.description}</Text>
+          </Group>
+        </Alert>
+      )}
+
+      {/* Paid remittance summary */}
+      {claim.status === 'Paid' && claim.remittance && (
+        <Group mt="xs" gap="lg" data-testid="remittance-summary">
+          <Text fz="sm">Billed: {formatCurrency(claim.totalCharges)}</Text>
+          <Text fz="sm" fw={500}>Paid: {formatCurrency(claim.remittance.paymentAmount)}</Text>
+          {claim.remittance.contractualAdjustment > 0 && (
+            <Text fz="sm" c="dimmed">Adj: {formatCurrency(claim.remittance.contractualAdjustment)}</Text>
+          )}
+        </Group>
+      )}
+
       {renderActionButton() && (
         <Group justify="flex-end" mt="xs">
           {renderActionButton()}
@@ -89,6 +130,10 @@ export function ClaimCard({ claim, patient, onCardClick }: ClaimCardProps) {
 
       <Collapse expanded={isExpanded && expandedCardMode === 'readiness'}>
         <ReadinessChecklist readiness={claim.readiness} />
+      </Collapse>
+
+      <Collapse expanded={isExpanded && expandedCardMode === 'payment'}>
+        <PaymentForm claimId={claim.id} expectedAmount={claim.expectedAmount} />
       </Collapse>
     </Card>
   )
