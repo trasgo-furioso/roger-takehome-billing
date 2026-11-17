@@ -234,7 +234,7 @@
 
 ### E2E Tests (write first, must fail)
 
-- [ ] T046 [US3] Playwright E2E test in `tests/e2e/us3-readiness.spec.ts`
+- [x] T046 [US3] Playwright E2E test in `tests/e2e/us3-readiness.spec.ts`
   - **Spec** (maps to spec.md US3 acceptance scenarios):
   - **Test 1 — Expand readiness checklist**: On `/claims`, find a "Ready for Review" card. Click "Review" button. Assert: card expands (Mantine `Collapse` opens) to show 7 checklist items. Each item shows a label and a pass (green `IconCheck`) or fail (red `IconX`) indicator.
   - **Test 2 — All passing shows Submit**: Find a "Ready for Review" card where seed data has all readiness checks passing. Assert: card action button shows "Submit" (not "Review").
@@ -242,15 +242,15 @@
 
 ### Implementation
 
-- [ ] T047 [P] [US3] Create `ReadinessChecklist` in `src/components/claims/ReadinessChecklist.tsx`
+- [x] T047 [P] [US3] Create `ReadinessChecklist` in `src/components/claims/ReadinessChecklist.tsx`
   - **Design**: Mantine `Stack gap="xs"` rendered inside a `Collapse` (parent controls `expanded` prop). Each of the 7 readiness items as a `Group`: `ThemeIcon` (green `IconCheck` if passing, red `IconX` if failing, using `color` and `variant="light"` + `radius="xl"`) + `Text fz="sm"` with item label. Labels: "OASIS Accepted", "Plan of Care Signed", "All Visits Documented", "Physician NPI on File", "Diagnoses Coded", "HIPPS Code Generated", "Revenue Codes Valid".
   - Props: `readiness: ReadinessCheck`
 
-- [ ] T048 [US3] Update `ClaimCard` in `src/components/claims/ClaimCard.tsx` to support inline expansion
+- [x] T048 [US3] Update `ClaimCard` in `src/components/claims/ClaimCard.tsx` to support inline expansion
   - **Design**: Add `Collapse expanded={expandedCardId === claim.id}` below card content, controlled by UI store `expandedCardId`. For "Ready for Review" claims: action button is `Button variant="light"` with label from `resolveAction()` — "Review" (opens checklist) or "Submit" (US4). Clicking "Review" calls `expandCard(claimId, 'readiness')`. Renders `ReadinessChecklist` inside the collapse.
   - Uses `useUIStore()` for expand/collapse state. Note: Mantine v7 Collapse uses `expanded` prop (not `in`).
 
-- [ ] T049 [US3] Make E2E tests pass — verify `tests/e2e/us3-readiness.spec.ts` passes.
+- [x] T049 [US3] Make E2E tests pass — verify `tests/e2e/us3-readiness.spec.ts` passes.
 
 **Checkpoint**: User Story 3 complete. Ready for Review cards expand with checklist, action reflects readiness. E2E tests green.
 
