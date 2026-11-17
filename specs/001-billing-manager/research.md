@@ -141,6 +141,9 @@
 | Build tool | Vite | latest |
 | UI framework | React | 18+ |
 | Component library | Mantine | v7 |
+| Notifications | @mantine/notifications | v7 |
+| Modals | @mantine/modals | v7 |
+| Icons | @tabler/icons-react | latest |
 | State management | Zustand | v5 |
 | Routing | TanStack Router | latest |
 | Language | TypeScript | strict |

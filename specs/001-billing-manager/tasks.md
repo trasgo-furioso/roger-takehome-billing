@@ -20,12 +20,12 @@
 
 **Purpose**: Scaffold the Vite + React + TypeScript project with all dependencies, routing shell, and Mantine theme.
 
-- [ ] T001 Initialize Vite project with `react-ts` template, install dependencies (mantine v7, @mantine/hooks, @mantine/dates, zustand, @tanstack/react-router, zod, dayjs), configure tsconfig strict mode in `./`
+- [ ] T001 Initialize Vite project with `react-ts` template, install dependencies (mantine v7, @mantine/hooks, @mantine/dates, @mantine/notifications, @mantine/modals, zustand, @tanstack/react-router, zod, dayjs, @tabler/icons-react), configure tsconfig strict mode in `./`
 - [ ] T002 Configure Mantine provider and theme in `src/theme/index.ts` — healthcare color palette, status-to-color mapping (Ready for Review=blue, Submitted=cyan, Rejected=orange, Denied=red, Paid=green, Written Off=gray), Card/Badge/Timeline component defaults
 - [ ] T003 [P] Configure Vitest in `vitest.config.ts` with React Testing Library (`@testing-library/react`, `@testing-library/jest-dom`), path aliases matching tsconfig
 - [ ] T004 [P] Configure Playwright in `playwright.config.ts` — base URL `http://localhost:5173`, single Chromium project, `webServer` auto-start via `npm run dev`
-- [ ] T005 Setup TanStack Router file-based route tree in `src/routes/` — create `__root.tsx` (wraps `MantineProvider` + `AppLayout`), `index.tsx` (placeholder Dashboard), `claims/index.tsx` (placeholder Claims), `claims/$claimId.tsx` (placeholder Detail). Generate `routeTree.gen.ts`. Wire `main.tsx` entry point.
-- [ ] T006 [P] Create `AppLayout` shell in `src/components/layout/AppLayout.tsx` using Mantine `AppShell` with `AppShell.Navbar` (sidebar) + `AppShell.Main` (content area). Create `Sidebar` in `src/components/layout/Sidebar.tsx` with Mantine `NavLink` items: Dashboard (icon: `IconLayoutDashboard`), Claims (icon: `IconFileText`), Reset (icon: `IconRefresh`). Logo placeholder + "Billing Manager" label at top using `Group` + `Text`. Active item highlighted via current route path. Claims stays active on `/claims/*`.
+- [ ] T005 Setup TanStack Router file-based route tree in `src/routes/` — create `__root.tsx` (wraps `MantineProvider` + `Notifications position="top-right"` + `ModalsProvider` + `AppLayout`), `index.tsx` (placeholder Dashboard), `claims/index.tsx` (placeholder Claims), `claims/$claimId.tsx` (placeholder Detail). Import `@mantine/notifications/styles.css` after core styles. Generate `routeTree.gen.ts`. Wire `main.tsx` entry point.
+- [ ] T006 [P] Create `AppLayout` shell in `src/components/layout/AppLayout.tsx` using Mantine `AppShell` with `navbar={{ width: 250, breakpoint: 'sm' }}`. Render `AppShell.Navbar` (sidebar) + `AppShell.Main` (content area). Create `Sidebar` in `src/components/layout/Sidebar.tsx` with Mantine `NavLink` items: Dashboard (icon: `IconLayoutDashboard`), Claims (icon: `IconFileText`), Reset (icon: `IconRefresh`). Logo placeholder + "Billing Manager" label at top using `Group` + `Text`. Active item highlighted via current route path. Claims stays active on `/claims/*`.
 - [ ] T007 [P] Create `ContentHeader` in `src/components/layout/ContentHeader.tsx` using Mantine `Group` with `justify="space-between"`. Props: `backTo?: { label: string, href: string }`, `title: string`, `action?: ReactNode`. Back button uses Mantine `Button` with `variant="subtle"` + `IconArrowLeft`. Title uses `Title` order 2.
 
 **Checkpoint**: App renders with sidebar navigation, three placeholder routes, and content header pattern. `npm run dev` works.
@@ -109,7 +109,7 @@
 - [ ] T025 [P] Implement status colors in `src/utils/status-colors.ts` — `statusColor(status: ClaimStatus): MantineColor` mapping per theme config
 - [ ] T026 Create seed data in `src/data/seed.ts` — 18 claims across all statuses: 3 Ready for Review (2 all-passing, 1 failing), 4 Submitted (various ages: 5d, 25d, 50d, 95d), 3 Rejected (different rejection codes), 2 Denied (different CARC/RARC codes, one >90 days), 4 Paid, 2 Written Off. Each with realistic patient, episode, billing period, diagnoses, service lines (using reference lookup codes), and timeline events. 6 patients total.
 - [ ] T027 Implement claims store in `src/stores/claims-store.ts` — Zustand store with `persist` middleware (key `'billing-claims'`, version 1). State: `claims`, `patients`, `episodes`, `billingPeriods`. Actions: `getClaimById`, `getPatientById`, `getClaimsFiltered`, `updateClaimField`, `submitClaim`, `postPayment`, `writeOffClaim`, `resetToSeedData`. Seed data loads when localStorage empty. Make T011 tests pass.
-- [ ] T028 Implement UI store in `src/stores/ui-store.ts` — Zustand store (no persist). State: `expandedCardId`, `expandedCardMode`, `notifications`. Actions: `expandCard`, `collapseCard`, `addNotification`, `dismissNotification` (auto-dismiss after 3s).
+- [ ] T028 Implement UI store in `src/stores/ui-store.ts` — Zustand store (no persist). State: `expandedCardId`, `expandedCardMode`. Actions: `expandCard`, `collapseCard`. Notifications use `@mantine/notifications` imperative API (`notifications.show()`) directly — no notification state in this store.
 - [ ] T029 Create barrel exports in `src/data/index.ts`, `src/utils/index.ts`, `src/stores/index.ts`
 
 **Checkpoint**: All unit tests pass. Types, seed data, stores, state machine, and utilities are ready. `npm run test` green.
@@ -153,7 +153,8 @@
     - `TextInput` with `IconSearch` left section for patient name search
     - `Button variant="subtle"` for "Clear All"
   - Each control's `onChange` immediately writes to URL search params via TanStack Router `useNavigate({ search: ... })`
-  - Props: `opened: boolean`, `searchParams: ClaimSearchParams`
+  - Props: `expanded: boolean`, `searchParams: ClaimSearchParams`
+  - Note: Mantine v7 `Collapse` uses `expanded` prop (not `in` or `opened`)
 
 - [ ] T033 [P] [US1] Create `FilterChips` in `src/components/claims/FilterChips.tsx`
   - **Design**: Mantine `Group` of `Badge` components with `rightSection={<IconX size={14} />}` and `onClick` to dismiss. One chip per active filter. Renders only when there are active filters AND filter panel is collapsed.
@@ -197,7 +198,7 @@
 ### Implementation
 
 - [ ] T038 [P] [US2] Create `useAutoSave` hook in `src/components/detail/useAutoSave.ts`
-  - **Design**: Custom hook wrapping `useDebouncedValue` from `@mantine/hooks` (500ms delay). On debounced value change, calls `updateClaimField(claimId, field, value)` on claims store, then `addNotification('Saved', 'success')` on UI store. Returns `{ value, onChange, isSaving }`.
+  - **Design**: Custom hook wrapping `useDebouncedValue` from `@mantine/hooks` (500ms delay). On debounced value change, calls `updateClaimField(claimId, field, value)` on claims store, then `notifications.show({ message: 'Saved', color: 'green', autoClose: 2000 })` from `@mantine/notifications`. Returns `{ value, onChange, isSaving }`.
 
 - [ ] T039 [P] [US2] Create `PatientSection` in `src/components/detail/PatientSection.tsx`
   - **Design**: Mantine `Card` with `Card.Section` header "Patient Information". Uses `SimpleGrid cols={2}` for field layout. Fields: `TextInput` for first name, last name, MBI; `Select` for sex; `TextInput` for DOB (read-only display); address fields. Each field wired to `useAutoSave`.
@@ -242,12 +243,12 @@
 ### Implementation
 
 - [ ] T047 [P] [US3] Create `ReadinessChecklist` in `src/components/claims/ReadinessChecklist.tsx`
-  - **Design**: Mantine `Stack gap="xs"` inside a `Collapse`. Each of the 7 readiness items as a `Group`: `ThemeIcon` (green `IconCheck` if passing, red `IconX` if failing, using `color` and `variant="light"` + `radius="xl"`) + `Text fz="sm"` with item label. Labels: "OASIS Accepted", "Plan of Care Signed", "All Visits Documented", "Physician NPI on File", "Diagnoses Coded", "HIPPS Code Generated", "Revenue Codes Valid".
+  - **Design**: Mantine `Stack gap="xs"` rendered inside a `Collapse` (parent controls `expanded` prop). Each of the 7 readiness items as a `Group`: `ThemeIcon` (green `IconCheck` if passing, red `IconX` if failing, using `color` and `variant="light"` + `radius="xl"`) + `Text fz="sm"` with item label. Labels: "OASIS Accepted", "Plan of Care Signed", "All Visits Documented", "Physician NPI on File", "Diagnoses Coded", "HIPPS Code Generated", "Revenue Codes Valid".
   - Props: `readiness: ReadinessCheck`
 
 - [ ] T048 [US3] Update `ClaimCard` in `src/components/claims/ClaimCard.tsx` to support inline expansion
-  - **Design**: Add `Collapse` below card content, controlled by UI store `expandedCardId`. For "Ready for Review" claims: action button is `Button variant="light"` with label from `resolveAction()` — "Review" (opens checklist) or "Submit" (US4). Clicking "Review" calls `expandCard(claimId, 'readiness')`. Renders `ReadinessChecklist` inside the collapse.
-  - Uses `useUIStore()` for expand/collapse state.
+  - **Design**: Add `Collapse expanded={expandedCardId === claim.id}` below card content, controlled by UI store `expandedCardId`. For "Ready for Review" claims: action button is `Button variant="light"` with label from `resolveAction()` — "Review" (opens checklist) or "Submit" (US4). Clicking "Review" calls `expandCard(claimId, 'readiness')`. Renders `ReadinessChecklist` inside the collapse.
+  - Uses `useUIStore()` for expand/collapse state. Note: Mantine v7 Collapse uses `expanded` prop (not `in`).
 
 - [ ] T049 [US3] Make E2E tests pass — verify `tests/e2e/us3-readiness.spec.ts` passes.
 
@@ -329,7 +330,7 @@
 ### Implementation
 
 - [ ] T058 [P] [US6] Create `PaymentForm` in `src/components/claims/PaymentForm.tsx`
-  - **Design**: Mantine `Stack gap="sm"` inside a `Collapse`. Fields: `NumberInput` with `prefix="$"` and `thousandSeparator` for payment amount, contractual adjustment, deductible amount, other adjustment. `Button color="green"` for "Confirm Payment" at bottom. On confirm: calls `postPayment(claimId, { paymentAmount, contractualAdjustment, deductibleAmount, otherAdjustment, checkEftReference: 'AUTO-' + Date.now(), remittanceDate: today })`, then `collapseCard()`.
+  - **Design**: Mantine `Stack gap="sm"` rendered inside a `Collapse` (parent controls `expanded` prop). Fields: `NumberInput` with `prefix="$"` and `thousandSeparator` for payment amount, contractual adjustment, deductible amount, other adjustment. `Button color="green"` for "Confirm Payment" at bottom. On confirm: calls `postPayment(claimId, { paymentAmount, contractualAdjustment, deductibleAmount, otherAdjustment, checkEftReference: 'AUTO-' + Date.now(), remittanceDate: today })`, then `collapseCard()`.
   - Props: `claimId: string`, `expectedAmount: number`
 
 - [ ] T059 [US6] Update `ClaimCard` for payment in `src/components/claims/ClaimCard.tsx`
@@ -434,6 +435,7 @@
     - `color`: event-type-specific color from theme
     - Body: `Text fz="xs" c="dimmed"` for formatted timestamp. If event has details: `Text fz="sm"` for details text (rejection reason, payment amount, etc.)
   - Props: `events: TimelineEvent[]`
+  - Note: `Timeline.Item` must be a direct child of `Timeline` — do not wrap in HOC or fragment.
 
 - [ ] T073 [US9] Add TimelineSection to ClaimDetailPage in `src/components/detail/ClaimDetailPage.tsx`
   - **Design**: Append `TimelineSection` as the last section in the detail page `Stack`, passing `claim.timeline`.
@@ -449,7 +451,7 @@
 **Purpose**: Final cleanup, cross-story integration testing, and quickstart validation.
 
 - [ ] T075 [P] Seed data review — ensure the 18 claims in `src/data/seed.ts` cover all E2E test scenarios: at least 1 claim with multi-step timeline (created → submitted → rejected → resubmitted), 1 paid claim with remittance, 1 denied claim >90 days, claims in each aging bucket
-- [ ] T076 [P] Reset confirmation dialog — update Sidebar "Reset" item in `src/components/layout/Sidebar.tsx` to show Mantine `Modal` with confirmation ("Reset all data to defaults? This cannot be undone.") before calling `resetToSeedData()`
+- [ ] T076 [P] Reset confirmation dialog — update Sidebar "Reset" item in `src/components/layout/Sidebar.tsx` to use `modals.openConfirmModal({ title: 'Reset Data', children: 'Reset all data to defaults? This cannot be undone.', labels: { confirm: 'Reset', cancel: 'Cancel' }, confirmProps: { color: 'red' }, onConfirm: () => resetToSeedData() })` from `@mantine/modals`
 - [ ] T077 [P] Responsive sidebar — ensure `AppShell.Navbar` collapses gracefully on smaller desktop windows (Mantine `AppShell` breakpoint handling)
 - [ ] T078 Run full Playwright suite — `npx playwright test` — all E2E tests from US1-US9 pass
 - [ ] T079 Run quickstart.md validation scenarios manually — confirm all 10 scenarios pass

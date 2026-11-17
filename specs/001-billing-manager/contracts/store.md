@@ -105,13 +105,12 @@ Ephemeral UI state. Not persisted to localStorage.
 interface UIState {
   expandedCardId: string | null       // Currently expanded card (readiness or payment)
   expandedCardMode: 'readiness' | 'payment' | null
-  notifications: Notification[]       // Auto-save success toasts
 }
 
 interface UIActions {
   expandCard(claimId: string, mode: 'readiness' | 'payment'): void
   collapseCard(): void
-  addNotification(message: string, type: 'success' | 'error'): void
-  dismissNotification(id: string): void
 }
 ```
+
+**Notifications**: Use `@mantine/notifications` imperative API (`notifications.show()`) directly — no notification state in this store. Requires `<Notifications />` provider in root layout and `@mantine/notifications/styles.css` import.
