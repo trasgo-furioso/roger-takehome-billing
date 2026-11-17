@@ -44,7 +44,7 @@ export function ClaimDetailPage({ claimId, fixCode }: ClaimDetailPageProps) {
   const fixHint = fixCode ? rejectionFieldHint[fixCode] : undefined
 
   return (
-    <Grid gutter="lg">
+    <Grid gap="lg">
       {/* Left column — 60%: claim content */}
       <Grid.Col span={{ base: 12, lg: 7 }}>
         <Stack gap="lg">

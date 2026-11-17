@@ -83,7 +83,7 @@ export function PaymentForm({ claimId, expectedAmount }: PaymentFormProps) {
         label="Remittance Date"
         description="Date on the 835/ERA"
         value={remittanceDate}
-        onChange={setRemittanceDate}
+        onChange={(v) => setRemittanceDate(v ? new Date(v as string) : null)}
         maxDate={new Date()}
         style={{ maxWidth: '50%' }}
       />

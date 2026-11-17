@@ -51,9 +51,13 @@ export function DateRangePickerWithPresets({ value, onChange }: DateRangePickerW
     close()
   }
 
-  const handleCalendarChange = (val: [Date | null, Date | null]) => {
-    onChange(val)
-    if (val[0] && val[1]) close()
+  const handleCalendarChange = (val: [string | Date | null, string | Date | null]) => {
+    const parsed: [Date | null, Date | null] = [
+      val[0] ? (val[0] instanceof Date ? val[0] : new Date(val[0])) : null,
+      val[1] ? (val[1] instanceof Date ? val[1] : new Date(val[1])) : null,
+    ]
+    onChange(parsed)
+    if (parsed[0] && parsed[1]) close()
   }
 
   const handleClear = () => {
