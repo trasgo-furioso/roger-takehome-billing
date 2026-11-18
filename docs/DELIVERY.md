@@ -2,10 +2,10 @@
 
 ## Links
 
-- **Live Prototype**: [Live app](https://courageous-elf-4594bb.netlify.app/)
-- **Video Walkthrough**: [Loom recording](https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc)
-- **Process Walkthrough**: [Loom recording](https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc)
-- **Source Code**: [GitHub repo](https://github.com/trasgo-furioso/roger-takehome-billing)
+- **Live Prototype**: [https://courageous-elf-4594bb.netlify.app/](https://courageous-elf-4594bb.netlify.app/)
+- **Video Walkthrough**: [https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc](https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc)
+- **Process Walkthrough**: [https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc](https://www.loom.com/share/69c0df637e494b29b3de85aa7614a7dc)
+- **Source Code**: [https://github.com/trasgo-furioso/roger-takehome-billing](https://github.com/trasgo-furioso/roger-takehome-billing)
 
 ---
 
